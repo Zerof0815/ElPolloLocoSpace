@@ -5,6 +5,7 @@ class World {
         new Chicken(),
         new Chicken()
     ];
+    cloud = new Cloud();
     canvas;
     ctx;
 
@@ -26,6 +27,7 @@ class World {
               enemy.height
             );
         });
+        this.ctx.drawImage(this.cloud.img, this.cloud.x, this.cloud.y, this.cloud.width, this.cloud.height);
 
         //constantly execute draw()
         let self = this;

@@ -1,10 +1,13 @@
-class Character extends MovableObject{
+class Character extends MovableObject {
 
-    constructor() {
-        super().loadImage("../assets/img/2_character_pepe/3_jump/J-34.png");
-    }
+    x = 50;
+    y = 140;
+    height = 150;
+    width = 100;
 
-    jump() {
+  constructor() {
+    super().loadImage("../assets/img/2_character_pepe/3_jump/J-34.png");
+  }
 
-    }
+  jump() {}
 }
