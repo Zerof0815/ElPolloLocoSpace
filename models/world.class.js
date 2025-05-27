@@ -37,20 +37,23 @@ class World {
     new Chicken(
       "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
       75,
-      75
+      75,
+      3
     ),
     new Chicken(
       "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
       75,
-      75
+      75,
+      3
     ),
     new Chicken(
       "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
       75,
-      75
+      75,
+      3
     ),
-    new Chicken("../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png", 50, 50),
-    new Chicken("../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png", 50, 50)
+    new Chicken("../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png", 50, 50, 4),
+    new Chicken("../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png", 50, 50, 4)
   ];
   canvas;
   ctx;
