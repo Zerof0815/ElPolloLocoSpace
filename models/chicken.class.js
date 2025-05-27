@@ -1,12 +1,19 @@
 class Chicken extends MovableObject {
   x = 550;
   y = Math.floor(Math.random() * 400) + 10;
-  height = 75;
-  width = 50;
+  height;
+  width;
 
-  constructor() {
-    super().loadImage(
-      "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png"
-    );
+  constructor(imagePath, height, width) {
+    super().loadImage(imagePath);
+    this.height = height;
+    this.width = width;
+    this.chickenMoveLeft()
+  }
+
+  chickenMoveLeft() {
+    setInterval(() => {
+      this.x -= 3;
+    }, 1000 / 30);
   }
 }
