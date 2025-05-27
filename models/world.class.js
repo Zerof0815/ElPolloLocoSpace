@@ -1,14 +1,14 @@
 class World {
   background = [
     new Background(
-      "../assets/img/5_background/Blue Version/layered/blue-back.png",
+      BACKGROUND,
       0,
       0,
       720,
       480
     ),
     new Asteroid(
-      "../assets/img/5_background/Blue Version/layered/prop-planet-big.png",
+      ASTEROIDS.PLANET,
       Math.floor(Math.random() * 721),
       Math.floor(Math.random() * 380),
       100,
@@ -16,7 +16,7 @@ class World {
       0.3
     ),
     new Asteroid(
-      "../assets/img/5_background/Blue Version/layered/asteroid-2.png",
+      ASTEROIDS.ROCK,
       Math.floor(Math.random() * 721),
       Math.floor(Math.random() * 380),
       50,
@@ -24,7 +24,7 @@ class World {
       1.5
     ),
     new Asteroid(
-      "../assets/img/5_background/Blue Version/layered/asteroid-2.png",
+      ASTEROIDS.ROCK,
       Math.floor(Math.random() * 721),
       Math.floor(Math.random() * 380),
       25,
@@ -34,26 +34,11 @@ class World {
   ];
   character = new Character();
   enemies = [
-    new Chicken(
-      "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
-      75,
-      75,
-      3
-    ),
-    new Chicken(
-      "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
-      75,
-      75,
-      3
-    ),
-    new Chicken(
-      "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
-      75,
-      75,
-      3
-    ),
-    new Chicken("../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png", 50, 50, 4),
-    new Chicken("../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png", 50, 50, 4)
+    new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL),
+    new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL),
+    new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL),
+    new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 4, CHICKEN_IMAGES.SMALL),
+    new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 4, CHICKEN_IMAGES.SMALL),
   ];
   canvas;
   ctx;
