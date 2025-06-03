@@ -50,3 +50,5 @@ window.addEventListener("keyup", (e) => {
 window.addEventListener("blur", () => {
   keyboard.w = keyboard.a = keyboard.s = keyboard.d = keyboard.SPACE = false;
 });
+
+console.log("Nur so");
