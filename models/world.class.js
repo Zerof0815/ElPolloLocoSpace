@@ -71,13 +71,23 @@ class World {
   }
 
   addToMap(movableObject) {
+    this.ctx.save();
+
+    let centerX = movableObject.x + movableObject.width / 2;
+    let centerY = movableObject.y + movableObject.height / 2;
+
+    this.ctx.translate(centerX, centerY);
+    this.ctx.rotate(movableObject.angle || 0);
+
     this.ctx.drawImage(
       movableObject.img,
-      movableObject.x,
-      movableObject.y,
+      -movableObject.width / 2,
+      -movableObject.height / 2,
       movableObject.width,
       movableObject.height
     );
+
+    this.ctx.restore();
   }
 
   fromArrayAddToMap(movableObjectInArray) {

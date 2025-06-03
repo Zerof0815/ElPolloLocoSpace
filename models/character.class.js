@@ -8,6 +8,9 @@ class Character extends MovableObject {
     speed = 10;
     lastShotTime = 0;
     shootCooldown = 500;
+    angle = 0;
+    targetAngle = 0;
+    smoothingFactor = 0.2;
 
   constructor() {
     super().loadImage("../assets/img/2_character_pepe/3_jump/J-34-turned.png");
@@ -15,21 +18,27 @@ class Character extends MovableObject {
   }
 
   moveCharacter() {
-    setInterval(() => {
-      if (this.world.keyboard.RIGHT && this.x + this.width < this.world.canvas.width / 1.75) {
-        this.x += this.speed;
-      }
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.x -= this.speed;
-      }
-      if (this.world.keyboard.UP && this.y > 0) {
-        this.y -= this.speed;
-      }
-      if (this.world.keyboard.DOWN && this.y + this.height < this.world.canvas.height) {
-        this.y += this.speed;
-      }
-    }, 1000/30);
-  }
+  setInterval(() => {
+    if (this.world.keyboard.UP && this.y > 0) {
+      this.y -= this.speed;
+      this.targetAngle = -0.3;
+    } else if (this.world.keyboard.DOWN && this.y + this.height < this.world.canvas.height) {
+      this.y += this.speed;
+      this.targetAngle = 0.3;
+    } else {
+      this.targetAngle = 0;
+    }
+
+    this.angle += (this.targetAngle - this.angle) * this.smoothingFactor;
+
+    if (this.world.keyboard.RIGHT && this.x + this.width < this.world.canvas.width / 1.75) {
+      this.x += this.speed;
+    }
+    if (this.world.keyboard.LEFT && this.x > 0) {
+      this.x -= this.speed;
+    }
+  }, 1000/30);
+}
 
   shoot() {
     setInterval(() => {
