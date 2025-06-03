@@ -4,6 +4,7 @@ class Keyboard {
     UP = false;
     DOWN = false;
     SPACE = false;
+    CLICK = false;
 
      constructor() {
 

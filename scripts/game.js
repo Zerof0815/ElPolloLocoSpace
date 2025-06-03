@@ -27,6 +27,12 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+window.addEventListener("mousedown", (e) => {
+  if (e.button === 0) {
+    keyboard.CLICK = true;
+  }
+});
+
 window.addEventListener("keyup", (e) => {
   switch (e.code) {
     case "KeyW":
@@ -47,8 +53,12 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
-window.addEventListener("blur", () => {
-  keyboard.w = keyboard.a = keyboard.s = keyboard.d = keyboard.SPACE = false;
+window.addEventListener("mouseup", (e) => {
+  if (e.button === 0) {
+    keyboard.CLICK = false;
+  }
 });
 
-console.log("Nur so");
+window.addEventListener("blur", () => {
+  keyboard.UP = keyboard.LEFT = keyboard.DOWN = keyboard.RIGHT = keyboard.SPACE = false;
+});
