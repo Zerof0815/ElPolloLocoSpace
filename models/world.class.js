@@ -2,6 +2,7 @@ class World {
   character = new Character();
   background = level1.background;
   enemies = level1.enemies;
+  enboss = new Endboss(ENDBOSS.WALK[0], 500, 500, 3, ENDBOSS.WALK);
   canvas;
   ctx;
   keyboard;
@@ -24,6 +25,7 @@ class World {
     this.fromArrayAddToMap(this.background);
     this.addToMap(this.character);
     this.fromArrayAddToMap(this.enemies);
+    this.addToMap(this.enboss);
 
     //constantly execute draw()
     let self = this;
@@ -53,8 +55,8 @@ class World {
   }
 
   fromArrayAddToMap(movableObjectInArray) {
-    movableObjectInArray.forEach((enemy) => {
-      this.addToMap(enemy);
+    movableObjectInArray.forEach((object) => {
+      this.addToMap(object);
     });
   }
 }
