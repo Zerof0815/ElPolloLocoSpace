@@ -1,11 +1,18 @@
-body {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
+* {
     margin: 0;
 }
 
 canvas {
     background-color: black;
+}
+
+.game-window {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
