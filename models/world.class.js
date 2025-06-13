@@ -1,7 +1,7 @@
 class World {
   character = new Character();
   background = level1.background;
-  enemies = level1.enemies;
+  enemies = [];
   enboss = new Endboss(ENDBOSS.WALK[0], 500, 500, 3, ENDBOSS.WALK);
   canvas;
   ctx;
@@ -14,7 +14,8 @@ class World {
     this.draw();
     this.setWorld();
     this.character.shoot();
-    this.spawnChickensInInterval();
+    this.spawnChickensInInterval(this);
+    this.spawnAsteroids(this);
   }
 
   setWorld() {
@@ -24,8 +25,8 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fromArrayAddToMap(this.background);
-    this.addToMap(this.character);
     this.fromArrayAddToMap(this.enemies);
+    this.addToMap(this.character);
     this.addToMap(this.enboss);
 
     //constantly execute draw()
@@ -61,17 +62,58 @@ class World {
     });
   }
 
-  spawnChickensInInterval() {
-    setInterval(() => {
-      const randomChicken = Math.random() < 0.5;
-      const y = Math.floor(Math.random() * 400);
+  spawnChickensInInterval(world) {
+    function spawnChicken() {
+      if (isTabActive) {
+        const y = Math.floor(Math.random() * (world.canvas.height - 75));
+        const chicken = new Chicken(
+          CHICKEN_IMAGES.NORMAL[0],
+          75,
+          75,
+          3,
+          CHICKEN_IMAGES.NORMAL
+        );
+        chicken.y = y;
+        world.enemies.push(chicken);
+      }
+      setTimeout(spawnChicken, 3000);
+    }
 
-      const newChicken = randomChicken
-        ? new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 3, CHICKEN_IMAGES.SMALL)
-        : new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL);
+    spawnChicken();
+  }
 
-      newChicken.y = y;
-      this.enemies.push(newChicken);
-    }, 2000);
+spawnAsteroids(world) {
+  function spawnRock() {
+    if (isTabActive) {
+      const rock = new Asteroid(
+        ASTEROIDS.ROCK,
+        Math.floor(Math.random() * 400) + 800,
+        Math.floor(Math.random() * 380),
+        50,
+        50,
+        1.5
+      );
+      world.background.push(rock);
+    }
+    setTimeout(spawnRock, 5000);
+  }
+
+  function spawnPlanet() {
+      if (isTabActive) {
+        const planet = new Asteroid(
+          ASTEROIDS.PLANET,
+          800,
+          Math.floor(Math.random() * 380),
+          100,
+          100,
+          0.3
+        );
+        world.background.push(planet);
+      }
+      setTimeout(spawnPlanet, 60000);
+    }
+
+    spawnRock();
+    spawnPlanet();
   }
 }
