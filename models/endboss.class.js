@@ -20,7 +20,7 @@ class Endboss extends MovableObject {
         this.loadImagesIntoCache(ENDBOSS.ALERT);
         this.loadImagesIntoCache(ENDBOSS.ATTACK);
 
-        this.moveToTargetX(460);
+        // this.moveToTargetX(460);
         this.startAnimation(ENDBOSS.WALK, 200, true);
     }
 

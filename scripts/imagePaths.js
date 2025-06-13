@@ -9,7 +9,7 @@ const CHICKEN_IMAGES = {
     "../assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png",
     "../assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
   ],
-};
+}
 
 const ENDBOSS = {
     WALK: [
@@ -56,4 +56,4 @@ const BACKGROUND =
 const ASTEROIDS = {
   PLANET: "../assets/img/5_background/Blue Version/layered/prop-planet-big.png",
   ROCK: "../assets/img/5_background/Blue Version/layered/asteroid-2.png"
-};
+}

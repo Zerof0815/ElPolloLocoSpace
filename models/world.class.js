@@ -14,6 +14,7 @@ class World {
     this.draw();
     this.setWorld();
     this.character.shoot();
+    this.spawnChickensInInterval();
   }
 
   setWorld() {
@@ -58,5 +59,19 @@ class World {
     movableObjectInArray.forEach((object) => {
       this.addToMap(object);
     });
+  }
+
+  spawnChickensInInterval() {
+    setInterval(() => {
+      const randomChicken = Math.random() < 0.5;
+      const y = Math.floor(Math.random() * 400);
+
+      const newChicken = randomChicken
+        ? new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 3, CHICKEN_IMAGES.SMALL)
+        : new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL);
+
+      newChicken.y = y;
+      this.enemies.push(newChicken);
+    }, 2000);
   }
 }
