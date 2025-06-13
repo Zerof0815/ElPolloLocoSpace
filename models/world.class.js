@@ -65,16 +65,22 @@ class World {
   spawnChickensInInterval(world) {
     function spawnChicken() {
       if (isTabActive) {
+        const isSmall = Math.random() < 0.5;
         const y = Math.floor(Math.random() * (world.canvas.height - 75));
-        const chicken = new Chicken(
-          CHICKEN_IMAGES.NORMAL[0],
-          75,
-          75,
-          3,
-          CHICKEN_IMAGES.NORMAL
-        );
-        chicken.y = y;
-        world.enemies.push(chicken);
+
+        const newChicken = isSmall
+          ? new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 3, CHICKEN_IMAGES.SMALL)
+          : new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL);
+
+        newChicken.y = y;
+        world.enemies.push(newChicken);
+
+        setTimeout(() => {
+          const index = world.enemies.indexOf(newChicken);
+          if (index > -1) {
+            world.enemies.splice(index, 1);
+          }
+        }, 15000);
       }
       setTimeout(spawnChicken, 3000);
     }
@@ -94,6 +100,13 @@ spawnAsteroids(world) {
         1.5
       );
       world.background.push(rock);
+
+      setTimeout(() => {
+        const index = world.background.indexOf(rock);
+        if (index > -1) {
+          world.background.splice(index, 1);
+        }
+      }, 20000);
     }
     setTimeout(spawnRock, 5000);
   }
@@ -109,6 +122,13 @@ spawnAsteroids(world) {
           0.3
         );
         world.background.push(planet);
+
+        setTimeout(() => {
+          const index = world.background.indexOf(planet);
+          if (index > -1) {
+            world.background.splice(index, 1);
+          }
+        }, 180000);
       }
       setTimeout(spawnPlanet, 60000);
     }
