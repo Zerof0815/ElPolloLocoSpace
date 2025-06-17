@@ -26,4 +26,20 @@ class MovableObject {
       this.x -= this.speed;
     }, 1000 / 30);
   }
+
+  isColliding(movableObject) {
+    let offset = this.characterCollisionOffset || {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    };
+
+    return (
+      this.x + this.width - offset.right > movableObject.x &&
+      this.y + this.height - offset.bottom > movableObject.y &&
+      this.x + offset.left < movableObject.x + movableObject.width &&
+      this.y + offset.top < movableObject.y + movableObject.height
+    );
+  }
 }

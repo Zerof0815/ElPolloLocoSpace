@@ -16,6 +16,7 @@ class World {
     this.character.shoot();
     this.spawnChickensInInterval(this);
     this.spawnAsteroids(this);
+    this.checkCollisions();
   }
 
   setWorld() {
@@ -87,6 +88,17 @@ class World {
         movableObject.height
       );
     }
+  }
+
+  checkCollisions() {
+    setInterval(() => {
+      this.enemies.forEach(enemy => {
+        if (this.character.isColliding(enemy)) {
+          console.log("Is colliding");
+          
+        }
+      });
+    }, 200);
   }
 
   spawnChickensInInterval(world) {
