@@ -57,7 +57,7 @@ class World {
     );
 
     this.ctx.restore();
-    this.checkObjectForRectangle(movableObject);
+    // this.checkObjectForRectangle(movableObject);
   }
 
   fromArrayAddToMap(movableObjectInArray) {
@@ -94,18 +94,21 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
-      this.enemies.forEach(enemy => {
+      this.enemies = this.enemies.filter((enemy) => {
         if (this.character.isColliding(enemy)) {
-          console.log("Is colliding");
-          
+          console.log("Gegner zerstört!");
+          return false; // ❌ Entfernt diesen Gegner aus dem Array
         }
+        return true; // ✅ Behält ihn
       });
     }, 200);
     setInterval(() => {
-      this.asteroids.forEach((asteroid) => {
+      this.asteroids = this.asteroids.filter((asteroid) => {
         if (this.character.isColliding(asteroid)) {
-          console.log("Is colliding");
+          console.log("Asteroid zerstört!");
+          return false; // ❌ Entfernt diesen Gegner aus dem Array
         }
+        return true; // ✅ Behält ihn
       });
     }, 200);
   }
