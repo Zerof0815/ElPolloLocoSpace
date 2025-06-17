@@ -14,8 +14,8 @@ class Character extends MovableObject {
     characterCollisionOffset = {
       left: 10,
       right: 80,
-      top: 25,
-      bottom: 20
+      top: 35,
+      bottom: 25
     };
 
   constructor() {

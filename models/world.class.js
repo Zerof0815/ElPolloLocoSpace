@@ -2,6 +2,7 @@ class World {
   character = new Character();
   background = level1.background;
   enemies = [];
+  asteroids = [];
   enboss = new Endboss(ENDBOSS.WALK[0], 500, 500, 3, ENDBOSS.WALK);
   canvas;
   ctx;
@@ -26,6 +27,7 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fromArrayAddToMap(this.background);
+    this.fromArrayAddToMap(this.asteroids);
     this.fromArrayAddToMap(this.enemies);
     this.addToMap(this.character);
     this.addToMap(this.enboss);
@@ -99,6 +101,13 @@ class World {
         }
       });
     }, 200);
+    setInterval(() => {
+      this.asteroids.forEach((asteroid) => {
+        if (this.character.isColliding(asteroid)) {
+          console.log("Is colliding");
+        }
+      });
+    }, 200);
   }
 
   spawnChickensInInterval(world) {
@@ -138,7 +147,7 @@ spawnAsteroids(world) {
         50,
         1.5
       );
-      world.background.push(rock);
+      world.asteroids.push(rock);
 
       setTimeout(() => {
         const index = world.background.indexOf(rock);
