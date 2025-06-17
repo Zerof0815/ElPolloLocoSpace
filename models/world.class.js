@@ -54,12 +54,39 @@ class World {
     );
 
     this.ctx.restore();
+    this.checkObjectForRectangle(movableObject);
   }
 
   fromArrayAddToMap(movableObjectInArray) {
     movableObjectInArray.forEach((object) => {
       this.addToMap(object);
     });
+  }
+
+  drawRectangle(x, y, xPlusWidth, yPlusHeight) {
+    this.ctx.beginPath();
+    this.ctx.lineWidth = "1";
+    this.ctx.strokeStyle = "blue";
+    this.ctx.rect(x, y, xPlusWidth, yPlusHeight);
+    this.ctx.stroke();
+  }
+
+  checkObjectForRectangle(movableObject) {
+    if (movableObject instanceof Character) {
+      this.drawRectangle(
+        movableObject.x + 10,
+        movableObject.y + 25,
+        movableObject.width - 80,
+        movableObject.height - 40
+      );
+    } else {
+      this.drawRectangle(
+        movableObject.x,
+        movableObject.y,
+        movableObject.width,
+        movableObject.height
+      );
+    }
   }
 
   spawnChickensInInterval(world) {
@@ -69,7 +96,7 @@ class World {
         const y = Math.floor(Math.random() * (world.canvas.height - 75));
 
         const newChicken = isSmall
-          ? new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 3, CHICKEN_IMAGES.SMALL)
+          ? new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 4, CHICKEN_IMAGES.SMALL)
           : new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL);
 
         newChicken.y = y;
@@ -106,7 +133,7 @@ spawnAsteroids(world) {
         if (index > -1) {
           world.background.splice(index, 1);
         }
-      }, 20000);
+      }, 30000);
     }
     setTimeout(spawnRock, 5000);
   }
