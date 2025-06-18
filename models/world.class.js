@@ -94,21 +94,33 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
+      if (this.character.isDead) return;
       this.enemies = this.enemies.filter((enemy) => {
         if (this.character.isColliding(enemy)) {
-          console.log("Gegner zerstört!");
-          return false; // ❌ Entfernt diesen Gegner aus dem Array
+          this.character.characterLifes--
+          
+          if (this.character.characterLifes <= 0 && !this.character.isDead) {
+            this.character.triggerDeath();
+          }
+
+          return false;
         }
-        return true; // ✅ Behält ihn
+        return true;
       });
     }, 200);
     setInterval(() => {
+      if (this.character.isDead) return;
       this.asteroids = this.asteroids.filter((asteroid) => {
         if (this.character.isColliding(asteroid)) {
-          console.log("Asteroid zerstört!");
-          return false; // ❌ Entfernt diesen Gegner aus dem Array
+          this.character.characterLifes--;
+          
+          if (this.character.characterLifes <= 0 && !this.character.isDead) {
+            this.character.triggerDeath();
+          }
+
+          return false;
         }
-        return true; // ✅ Behält ihn
+        return true;
       });
     }, 200);
   }
@@ -139,30 +151,30 @@ class World {
     spawnChicken();
   }
 
-spawnAsteroids(world) {
-  function spawnRock() {
-    if (isTabActive) {
-      const rock = new Asteroid(
-        ASTEROIDS.ROCK,
-        Math.floor(Math.random() * 400) + 800,
-        Math.floor(Math.random() * 380),
-        50,
-        50,
-        1.5
-      );
-      world.asteroids.push(rock);
+  spawnAsteroids(world) {
+    function spawnRock() {
+      if (isTabActive) {
+        const rock = new Asteroid(
+          ASTEROIDS.ROCK,
+          Math.floor(Math.random() * 400) + 800,
+          Math.floor(Math.random() * 380),
+          50,
+          50,
+          1.5
+        );
+        world.asteroids.push(rock);
 
-      setTimeout(() => {
-        const index = world.background.indexOf(rock);
-        if (index > -1) {
-          world.background.splice(index, 1);
-        }
-      }, 30000);
+        setTimeout(() => {
+          const index = world.background.indexOf(rock);
+          if (index > -1) {
+            world.background.splice(index, 1);
+          }
+        }, 30000);
+      }
+      setTimeout(spawnRock, 5000);
     }
-    setTimeout(spawnRock, 5000);
-  }
 
-  function spawnPlanet() {
+    function spawnPlanet() {
       if (isTabActive) {
         const planet = new Asteroid(
           ASTEROIDS.PLANET,
