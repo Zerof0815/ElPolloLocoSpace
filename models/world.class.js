@@ -57,6 +57,7 @@ class World {
     );
 
     this.ctx.restore();
+    // shows hitbox
     // this.checkObjectForRectangle(movableObject);
   }
 
@@ -97,6 +98,7 @@ class World {
       if (this.character.isDead) return;
       this.enemies = this.enemies.filter((enemy) => {
         if (this.character.isColliding(enemy)) {
+          this.character.characterGetsHit();
           this.character.characterLifes--
           
           if (this.character.characterLifes <= 0 && !this.character.isDead) {
@@ -112,6 +114,7 @@ class World {
       if (this.character.isDead) return;
       this.asteroids = this.asteroids.filter((asteroid) => {
         if (this.character.isColliding(asteroid)) {
+          this.character.characterGetsHit();
           this.character.characterLifes--;
           
           if (this.character.characterLifes <= 0 && !this.character.isDead) {

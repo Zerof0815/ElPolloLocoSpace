@@ -57,3 +57,11 @@ const ASTEROIDS = {
   PLANET: "../assets/img/5_background/Blue Version/layered/prop-planet-big.png",
   ROCK: "../assets/img/5_background/Blue Version/layered/asteroid-2.png"
 }
+
+const PEPE_ANIMATION = {
+  HURT: [
+    "../assets/img/2_character_pepe/4_hurt/H-41.png",
+    "../assets/img/2_character_pepe/4_hurt/H-42.png",
+    "../assets/img/2_character_pepe/4_hurt/H-43.png",
+  ],
+};

@@ -4,7 +4,7 @@ class MovableObject {
   img;
   height;
   width;
-  imageCache = [];
+  imageCache = {};
   currentImage = 0;
   speed;
 

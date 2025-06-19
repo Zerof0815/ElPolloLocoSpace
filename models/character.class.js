@@ -20,8 +20,9 @@ class Character extends MovableObject {
   };
 
   constructor() {
-    super().loadImage("../assets/img/2_character_pepe/3_jump/J-34-turned.png");
+    super().loadImage("../assets/img/2_character_pepe/3_jump/J-34.png");
     this.moveCharacter();
+    this.loadImagesIntoCache(PEPE_ANIMATION.HURT);
   }
 
   moveCharacter() {
@@ -74,19 +75,17 @@ class Character extends MovableObject {
   triggerDeath() {
     this.isDead = true;
 
-    // Bild ändern
     const deathImg = new Image();
     deathImg.src = "../assets/img/2_character_pepe/5_dead/D-51.png";
     this.img = deathImg;
 
-    // Nach 3 Sekunden: Fallanimation starten
     setTimeout(() => {
       this.animateDeathFall();
-    }, 3000);
+    }, 2000);
   }
 
   animateDeathFall() {
-    let velocityY = -5; // Erst nach oben
+    let velocityY = -5;
     let gravity = 0.2;
 
     const deathFallInterval = setInterval(() => {
@@ -94,10 +93,26 @@ class Character extends MovableObject {
       this.angle += 0.1;
       velocityY += gravity;
 
-      // Wenn Character aus dem Canvas gefallen ist
       if (this.y > this.world.canvas.height + 200) {
         clearInterval(deathFallInterval);
       }
     }, 1000 / 30);
+  }
+
+  characterGetsHit() {
+    if (this.characterLifes <= 1) return;
+
+    let frameIndex = 0;
+    const hurtInterval = setInterval(() => {
+      let path = PEPE_ANIMATION.HURT[frameIndex];
+      this.img = this.imageCache[path];
+      
+      if (frameIndex >= PEPE_ANIMATION.HURT.length) {
+        clearInterval(hurtInterval);
+        this.loadImage("../assets/img/2_character_pepe/3_jump/J-34.png");
+      }
+
+      frameIndex++;
+    }, 100);
   }
 }
