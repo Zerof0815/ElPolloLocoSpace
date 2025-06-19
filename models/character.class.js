@@ -1,8 +1,8 @@
 class Character extends MovableObject {
   x = 50;
   y = 200;
-  height = 100;
-  width = 200;
+  height = 125;
+  width = 250;
   world;
   speed = 10;
   lastShotTime = 0;
@@ -103,16 +103,19 @@ class Character extends MovableObject {
     if (this.characterLifes <= 1) return;
 
     let frameIndex = 0;
+    const totalFrames = PEPE_ANIMATION.HURT.length * 3;
+
     const hurtInterval = setInterval(() => {
-      let path = PEPE_ANIMATION.HURT[frameIndex];
+      let currentFrame = frameIndex % PEPE_ANIMATION.HURT.length;
+      let path = PEPE_ANIMATION.HURT[currentFrame];
       this.img = this.imageCache[path];
-      
-      if (frameIndex >= PEPE_ANIMATION.HURT.length) {
+
+      frameIndex++;
+
+      if (frameIndex >= totalFrames) {
         clearInterval(hurtInterval);
         this.loadImage("../assets/img/2_character_pepe/3_jump/J-34.png");
       }
-
-      frameIndex++;
     }, 100);
   }
 }
