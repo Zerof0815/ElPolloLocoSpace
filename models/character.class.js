@@ -64,7 +64,7 @@ class Character extends MovableObject {
 
       const now = Date.now();
       if (
-        this.world?.keyboard?.CLICK &&
+        this.world?.keyboard?.SPACE &&
         now - this.lastShotTime >= this.shootCooldown
       ) {
         console.log("Auto Shooting!");
