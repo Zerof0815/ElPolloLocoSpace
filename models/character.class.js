@@ -7,6 +7,7 @@ class Character extends MovableObject {
   speed = 10;
   lastShotTime = 0;
   shootCooldown = 500;
+  collisionCooldown = false;
   angle = 0;
   targetAngle = 0;
   smoothingFactor = 0.2;
