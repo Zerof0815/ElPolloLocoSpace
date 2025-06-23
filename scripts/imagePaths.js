@@ -2,12 +2,12 @@ const CHICKEN_IMAGES = {
   NORMAL: [
     "../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
     "../assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
-    "../assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png",
+    "../assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png"
   ],
   SMALL: [
     "../assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png",
     "../assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png",
-    "../assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
+    "../assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png"
   ],
 }
 
@@ -26,7 +26,7 @@ const ENDBOSS = {
       "../assets/img/4_enemie_boss_chicken/2_alert/G9.png",
       "../assets/img/4_enemie_boss_chicken/2_alert/G10.png",
       "../assets/img/4_enemie_boss_chicken/2_alert/G11.png",
-      "../assets/img/4_enemie_boss_chicken/2_alert/G12.png",
+      "../assets/img/4_enemie_boss_chicken/2_alert/G12.png"
     ],
     ATTACK: [
       "../assets/img/4_enemie_boss_chicken/3_attack/G13.png",
@@ -36,17 +36,17 @@ const ENDBOSS = {
       "../assets/img/4_enemie_boss_chicken/3_attack/G17.png",
       "../assets/img/4_enemie_boss_chicken/3_attack/G18.png",
       "../assets/img/4_enemie_boss_chicken/3_attack/G19.png",
-      "../assets/img/4_enemie_boss_chicken/3_attack/G20.png",
+      "../assets/img/4_enemie_boss_chicken/3_attack/G20.png"
     ],
     HURT: [
       "../assets/img/4_enemie_boss_chicken/4_hurt/G21.png",
       "../assets/img/4_enemie_boss_chicken/4_hurt/G22.png",
-      "../assets/img/4_enemie_boss_chicken/4_hurt/G23.png",
+      "../assets/img/4_enemie_boss_chicken/4_hurt/G23.png"
     ],
     DEAD: [
       "../assets/img/4_enemie_boss_chicken/5_dead/G24.png",
       "../assets/img/4_enemie_boss_chicken/5_dead/G25.png",
-      "../assets/img/4_enemie_boss_chicken/5_dead/G26.png",
+      "../assets/img/4_enemie_boss_chicken/5_dead/G26.png"
     ]
 }
 
@@ -62,6 +62,17 @@ const PEPE_ANIMATION = {
   HURT: [
     "../assets/img/2_character_pepe/4_hurt/H-41.png",
     "../assets/img/2_character_pepe/4_hurt/H-42.png",
-    "../assets/img/2_character_pepe/4_hurt/H-43.png",
+    "../assets/img/2_character_pepe/4_hurt/H-43.png"
+  ],
+};
+
+const STATUS_BAR = {
+  HEALTH: [
+    "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png",
+    "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png",
+    "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png",
+    "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png",
+    "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png",
+    "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png"
   ],
 };

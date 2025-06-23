@@ -4,6 +4,7 @@ class World {
   enemies = [];
   asteroids = [];
   enboss = new Endboss(ENDBOSS.WALK[0], 500, 500, 3, ENDBOSS.WALK);
+  statusBar = new StatusBar();
   canvas;
   ctx;
   keyboard;
@@ -31,6 +32,7 @@ class World {
     this.fromArrayAddToMap(this.enemies);
     this.addToMap(this.character);
     this.addToMap(this.enboss);
+    this.addToMap(this.statusBar);
 
     //constantly execute draw()
     let self = this;
@@ -93,54 +95,49 @@ class World {
     }
   }
 
+  handleCollision() {
+    if (!this.character.collisionCooldown) {
+      this.character.collisionCooldown = true;
+
+      this.character.characterGetsHit();
+      this.character.characterLifes--;
+
+      const percentLife =
+        (this.character.characterLifes / this.character.maxLifes) * 100;
+      this.statusBar.setPercentage(percentLife);
+
+      if (this.character.characterLifes <= 0 && !this.character.isDead) {
+        this.character.triggerDeath();
+      }
+
+      setTimeout(() => {
+        this.character.collisionCooldown = false;
+      }, 1000);
+
+      return true;
+    }
+
+    return false;
+  }
+
+  checkObjectCollisions(objectArray) {
+    return objectArray.filter((object) => {
+      if (this.character.isColliding(object)) {
+        return !this.handleCollision();
+      }
+      return true;
+    });
+  }
+
   checkCollisions() {
     setInterval(() => {
       if (this.character.isDead) return;
-      this.enemies = this.enemies.filter((enemy) => {
-        if (this.character.isColliding(enemy)) {
-          if (!this.character.collisionCooldown) {
-            this.character.collisionCooldown = true;
-
-            this.character.characterGetsHit();
-            this.character.characterLifes--;
-
-            if (this.character.characterLifes <= 0 && !this.character.isDead) {
-              this.character.triggerDeath();
-            }
-
-            setTimeout(() => {
-              this.character.collisionCooldown = false;
-            }, 1000);
-
-            return false;
-          }
-        }
-        return true;
-      });
+      this.enemies = this.checkObjectCollisions(this.enemies);
     }, 200);
+
     setInterval(() => {
       if (this.character.isDead) return;
-      this.asteroids = this.asteroids.filter((asteroid) => {
-        if (this.character.isColliding(asteroid)) {
-          if (!this.character.collisionCooldown) {
-            this.character.collisionCooldown = true;
-
-            this.character.characterGetsHit();
-            this.character.characterLifes--;
-
-            if (this.character.characterLifes <= 0 && !this.character.isDead) {
-              this.character.triggerDeath();
-            }
-
-            setTimeout(() => {
-              this.character.collisionCooldown = false;
-            }, 1000);
-
-            return false;
-          }
-        }
-        return true;
-      });
+      this.asteroids = this.checkObjectCollisions(this.asteroids);
     }, 200);
   }
 
@@ -151,8 +148,20 @@ class World {
         const y = Math.floor(Math.random() * (world.canvas.height - 75));
 
         const newChicken = isSmall
-          ? new Chicken(CHICKEN_IMAGES.SMALL[0], 50, 50, 4, CHICKEN_IMAGES.SMALL)
-          : new Chicken(CHICKEN_IMAGES.NORMAL[0], 75, 75, 3, CHICKEN_IMAGES.NORMAL);
+          ? new Chicken(
+              CHICKEN_IMAGES.SMALL[0],
+              50,
+              50,
+              4,
+              CHICKEN_IMAGES.SMALL
+            )
+          : new Chicken(
+              CHICKEN_IMAGES.NORMAL[0],
+              75,
+              75,
+              3,
+              CHICKEN_IMAGES.NORMAL
+            );
 
         newChicken.y = y;
         world.enemies.push(newChicken);

@@ -12,7 +12,8 @@ class Character extends MovableObject {
   targetAngle = 0;
   smoothingFactor = 0.2;
   isDead = false;
-  characterLifes = 3;
+  maxLifes = 5;
+  characterLifes = 5;
   characterCollisionOffset = {
     left: 10,
     right: 80,
