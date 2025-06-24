@@ -69,11 +69,11 @@ class World {
     });
   }
 
-  drawRectangle(x, y, xPlusWidth, yPlusHeight) {
+  drawRectangle(x, y, width, height) {
     this.ctx.beginPath();
     this.ctx.lineWidth = "1";
     this.ctx.strokeStyle = "blue";
-    this.ctx.rect(x, y, xPlusWidth, yPlusHeight);
+    this.ctx.rect(x, y, width, height);
     this.ctx.stroke();
   }
 

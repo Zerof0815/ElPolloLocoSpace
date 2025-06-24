@@ -6,10 +6,7 @@ class StatusBar extends DrawableObject {
   percentage = 100;
 
   constructor() {
-    super().loadImage(
-      "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png"
-    );
-    this.loadImagesIntoCache(STATUS_BAR.HEALTH);
+    super().loadImagesIntoCache(STATUS_BAR.HEALTH);
     this.setPercentage(100);
   }
 
