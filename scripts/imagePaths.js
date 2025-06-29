@@ -76,3 +76,10 @@ const STATUS_BAR = {
     "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png"
   ],
 };
+
+const BOTTLE_ANIMATION = [
+  "assets/img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png",
+  "assets/img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png",
+  "assets/img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png",
+  "assets/img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png"
+];

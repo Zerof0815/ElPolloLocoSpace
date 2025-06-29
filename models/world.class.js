@@ -5,6 +5,7 @@ class World {
   asteroids = [];
   enboss = new Endboss(ENDBOSS.WALK[0], 500, 500, 3, ENDBOSS.WALK);
   statusBar = new StatusBar();
+  bottles = [];
   canvas;
   ctx;
   keyboard;
@@ -30,6 +31,7 @@ class World {
     this.fromArrayAddToMap(this.background);
     this.fromArrayAddToMap(this.asteroids);
     this.fromArrayAddToMap(this.enemies);
+    this.fromArrayAddToMap(this.bottles);
     this.addToMap(this.character);
     this.addToMap(this.enboss);
     this.addToMap(this.statusBar);
@@ -133,23 +135,64 @@ class World {
     setInterval(() => {
       if (this.character.isDead) return;
       this.enemies = this.checkObjectCollisions(this.enemies);
-    }, 200);
+    }, 1000 / 30);
 
     setInterval(() => {
       if (this.character.isDead) return;
       this.asteroids = this.checkObjectCollisions(this.asteroids);
-    }, 200);
+    }, 1000 / 30);
+
+    setInterval(() => {
+      if (this.character.isDead) return;
+      this.checkBottleHits();
+    }, 1000 / 30);
+  }
+
+  handleBottleHit(bottle, enemy) {
+    const index = this.enemies.indexOf(enemy);
+    if (index > -1) {
+      this.enemies.splice(index, 1);
+    }
+
+    const bottleIndex = this.bottles.indexOf(bottle);
+    if (bottleIndex > -1) {
+      this.bottles.splice(bottleIndex, 1);
+    }
+
+  }
+
+  handleBottleAsteroidHit(bottle, asteroid) {
+    const bottleIndex = this.bottles.indexOf(bottle);
+    if (bottleIndex > -1) {
+      this.bottles.splice(bottleIndex, 1);
+    }
+  }
+
+  checkBottleHits() {
+    this.bottles.forEach((bottle) => {
+      this.enemies.forEach((enemy) => {
+        if (bottle.isColliding(enemy)) {
+          this.handleBottleHit(bottle, enemy);
+        }
+      });
+
+      this.asteroids.forEach((asteroid) => {
+        if (bottle.isColliding(asteroid)) {
+          this.handleBottleAsteroidHit(bottle, asteroid);
+        }
+      });
+    });
   }
 
   spawnChicken(world) {
     if (isTabActive) {
       const isSmall = Math.random() < 0.5;
       const y = Math.floor(Math.random() * (world.canvas.height - 75));
-  
+
       const newChicken = this.createChicken(isSmall);
       newChicken.y = y;
       world.enemies.push(newChicken);
-  
+
       setTimeout(() => {
         const index = world.enemies.indexOf(newChicken);
         if (index > -1) {
@@ -167,7 +210,8 @@ class World {
         50,
         50,
         4,
-        CHICKEN_IMAGES.SMALL
+        CHICKEN_IMAGES.SMALL,
+        1
       );
     } else {
       return new Chicken(
@@ -175,7 +219,8 @@ class World {
         75,
         75,
         3,
-        CHICKEN_IMAGES.NORMAL
+        CHICKEN_IMAGES.NORMAL,
+        2
       );
     }
   }

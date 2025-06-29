@@ -16,9 +16,9 @@ class Character extends MovableObject {
   characterLifes = 5;
   characterCollisionOffset = {
     left: 10,
-    right: 80,
-    top: 35,
-    bottom: 25,
+    right: 100,
+    top: 45,
+    bottom: 35,
   };
 
   constructor() {
@@ -69,7 +69,19 @@ class Character extends MovableObject {
       ) {
         console.log("Auto Shooting!");
         this.lastShotTime = now;
-        //Create projectile here
+
+        const bottle = new Bottle(
+          this.x + this.width,
+          this.y + this.height / 2
+        );
+        this.world.bottles.push(bottle);
+
+        setTimeout(() => {
+          const index = world.bottles.indexOf(bottle);
+          if (index > -1) {
+            this.world.bottles.splice(index, 1);
+          }
+        }, 1800);
       }
     }, 1000 / 30);
   }
