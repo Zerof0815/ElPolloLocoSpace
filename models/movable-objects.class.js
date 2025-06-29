@@ -14,6 +14,7 @@ class MovableObject extends DrawableObject {
 
   moveRight() {
     setInterval(() => {
+      if (this.isBreaking) return;
       this.x += this.bottleSpeed;
     }, 1000 / 30);
   }

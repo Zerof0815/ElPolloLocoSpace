@@ -158,28 +158,32 @@ class World {
 
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
-      this.bottles.splice(bottleIndex, 1);
+      bottle.breakAnimation(() => {
+        this.bottles.splice(bottleIndex, 1);
+      });
     }
   }
 
   handleBottleAsteroidHit(bottle, asteroid) {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
-      this.bottles.splice(bottleIndex, 1);
+      bottle.breakAnimation(() => {
+        this.bottles.splice(bottleIndex, 1);
+      });
     }
   }
 
   checkBottleHits() {
     this.bottles.forEach((bottle) => {
       this.enemies.forEach((enemy) => {
-        if (bottle.isColliding(enemy)) {
+        if (!bottle.isBreaking && bottle.isColliding(enemy)) {
           enemy.chickenLifes--;
           this.handleBottleHit(bottle, enemy);
         }
       });
       
       this.asteroids.forEach((asteroid) => {
-        if (bottle.isColliding(asteroid)) {
+        if (!bottle.isBreaking && bottle.isColliding(asteroid)) {
           this.handleBottleAsteroidHit(bottle, asteroid);
         }
       });
