@@ -4,7 +4,6 @@ class Chicken extends MovableObject {
   height;
   width;
   chickenLifes;
-  isDead = false;
   IMAGES_WALKING;
 
   constructor(imagePath, height, width, speed, walkingImages, chickenLifes) {

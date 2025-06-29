@@ -149,16 +149,17 @@ class World {
   }
 
   handleBottleHit(bottle, enemy) {
-    const index = this.enemies.indexOf(enemy);
-    if (index > -1) {
-      this.enemies.splice(index, 1);
+    if (enemy.chickenLifes <= 0) {
+      const index = this.enemies.indexOf(enemy);
+      if (index > -1) {
+        this.enemies.splice(index, 1);
+      }
     }
 
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
       this.bottles.splice(bottleIndex, 1);
     }
-
   }
 
   handleBottleAsteroidHit(bottle, asteroid) {
@@ -172,10 +173,11 @@ class World {
     this.bottles.forEach((bottle) => {
       this.enemies.forEach((enemy) => {
         if (bottle.isColliding(enemy)) {
+          enemy.chickenLifes--;
           this.handleBottleHit(bottle, enemy);
         }
       });
-
+      
       this.asteroids.forEach((asteroid) => {
         if (bottle.isColliding(asteroid)) {
           this.handleBottleAsteroidHit(bottle, asteroid);
