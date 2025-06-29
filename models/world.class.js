@@ -62,7 +62,7 @@ class World {
 
     this.ctx.restore();
     // shows hitbox
-    // this.checkObjectForRectangle(movableObject);
+    // this.drawRectangleForObject(movableObject);
   }
 
   fromArrayAddToMap(movableObjectInArray) {
@@ -71,30 +71,24 @@ class World {
     });
   }
 
-  drawRectangle(x, y, width, height) {
+  drawRectangleForObject(movableObject) {
+    let offset = movableObject.objectCollisionOffset || {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    };
+
+    const x = movableObject.x + offset.left;
+    const y = movableObject.y + offset.top;
+    const width = movableObject.width - offset.left - offset.right;
+    const height = movableObject.height - offset.top - offset.bottom;
+
     this.ctx.beginPath();
     this.ctx.lineWidth = "1";
     this.ctx.strokeStyle = "blue";
     this.ctx.rect(x, y, width, height);
     this.ctx.stroke();
-  }
-
-  checkObjectForRectangle(movableObject) {
-    if (movableObject instanceof Character) {
-      this.drawRectangle(
-        movableObject.x + 10,
-        movableObject.y + 25,
-        movableObject.width - 80,
-        movableObject.height - 40
-      );
-    } else {
-      this.drawRectangle(
-        movableObject.x,
-        movableObject.y,
-        movableObject.width,
-        movableObject.height
-      );
-    }
   }
 
   handleCollision() {
@@ -181,7 +175,7 @@ class World {
           this.handleBottleHit(bottle, enemy);
         }
       });
-      
+
       this.asteroids.forEach((asteroid) => {
         if (!bottle.isBreaking && bottle.isColliding(asteroid)) {
           this.handleBottleAsteroidHit(bottle, asteroid);
@@ -193,7 +187,7 @@ class World {
   spawnChicken(world) {
     if (isTabActive) {
       const isSmall = Math.random() < 0.5;
-      const y = Math.floor(Math.random() * (world.canvas.height - 75));
+      const y = Math.floor(Math.random() * (world.canvas.height - 125) + 50);
 
       const newChicken = this.createChicken(isSmall);
       newChicken.y = y;

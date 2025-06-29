@@ -5,6 +5,12 @@ class Chicken extends MovableObject {
   width;
   chickenLifes;
   IMAGES_WALKING;
+  objectCollisionOffset = {
+    left: 15,
+    right: 15,
+    top: 15,
+    bottom: 15,
+  };
 
   constructor(imagePath, height, width, speed, walkingImages, chickenLifes) {
     super().loadImage(imagePath);

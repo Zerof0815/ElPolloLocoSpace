@@ -14,7 +14,7 @@ class Character extends MovableObject {
   isDead = false;
   maxLifes = 5;
   characterLifes = 5;
-  characterCollisionOffset = {
+  objectCollisionOffset = {
     left: 10,
     right: 100,
     top: 45,

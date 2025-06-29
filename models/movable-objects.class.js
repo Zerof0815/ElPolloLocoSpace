@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
   width;
   speed;
   bottleSpeed;
+  objectCollisionOffset;
 
   moveLeft() {
     setInterval(() => {
@@ -20,7 +21,13 @@ class MovableObject extends DrawableObject {
   }
 
   isColliding(movableObject) {
-    let offset = this.characterCollisionOffset || {
+    let offset1 = this.objectCollisionOffset || {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    };
+    let offset2 = movableObject.objectCollisionOffset || {
       left: 0,
       right: 0,
       top: 0,
@@ -28,10 +35,12 @@ class MovableObject extends DrawableObject {
     };
 
     return (
-      this.x + this.width - offset.right > movableObject.x &&
-      this.y + this.height - offset.bottom > movableObject.y &&
-      this.x + offset.left < movableObject.x + movableObject.width &&
-      this.y + offset.top < movableObject.y + movableObject.height
+      this.x + this.width - offset1.right > movableObject.x + offset2.left &&
+      this.y + this.height - offset1.bottom > movableObject.y + offset2.top &&
+      this.x + offset1.left <
+        movableObject.x + movableObject.width - offset2.right &&
+      this.y + offset1.top <
+        movableObject.y + movableObject.height - offset2.bottom
     );
   }
 }
