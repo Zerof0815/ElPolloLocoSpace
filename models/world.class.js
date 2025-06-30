@@ -143,11 +143,16 @@ class World {
   }
 
   handleBottleHit(bottle, enemy) {
-    if (enemy.chickenLifes <= 0) {
-      const index = this.enemies.indexOf(enemy);
-      if (index > -1) {
-        this.enemies.splice(index, 1);
-      }
+    if (enemy.chickenLifes <= 0 && !enemy.isDead) {
+      enemy.isDead = true;
+      enemy.deathAnimation();
+
+      setTimeout(() => {
+        const index = this.enemies.indexOf(enemy);
+        if (index > -1) {
+          this.enemies.splice(index, 1);
+        }
+      }, 1000);
     }
 
     const bottleIndex = this.bottles.indexOf(bottle);
@@ -170,7 +175,7 @@ class World {
   checkBottleHits() {
     this.bottles.forEach((bottle) => {
       this.enemies.forEach((enemy) => {
-        if (!bottle.isBreaking && bottle.isColliding(enemy)) {
+        if (!bottle.isBreaking && bottle.isColliding(enemy) && enemy.chickenLifes >= 1) {
           enemy.chickenLifes--;
           this.handleBottleHit(bottle, enemy);
         }
@@ -211,7 +216,8 @@ class World {
         50,
         4,
         CHICKEN_IMAGES.SMALL,
-        1
+        1,
+        CHICKEN_IMAGES.SMALL_DEAD
       );
     } else {
       return new Chicken(
@@ -220,7 +226,8 @@ class World {
         75,
         3,
         CHICKEN_IMAGES.NORMAL,
-        2
+        2,
+        CHICKEN_IMAGES.NORMAL_DEAD
       );
     }
   }

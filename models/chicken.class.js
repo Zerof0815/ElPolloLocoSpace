@@ -4,6 +4,7 @@ class Chicken extends MovableObject {
   height;
   width;
   chickenLifes;
+  deadImage;
   IMAGES_WALKING;
   objectCollisionOffset = {
     left: 15,
@@ -12,10 +13,11 @@ class Chicken extends MovableObject {
     bottom: 15,
   };
 
-  constructor(imagePath, height, width, speed, walkingImages, chickenLifes) {
+  constructor(imagePath, height, width, speed, walkingImages, chickenLifes, deadImage) {
     super().loadImage(imagePath);
     this.IMAGES_WALKING = walkingImages;
     this.loadImagesIntoCache(this.IMAGES_WALKING);
+    this.deadImage = deadImage;
     this.height = height;
     this.width = width;
     this.speed = speed;
@@ -25,12 +27,19 @@ class Chicken extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
-      //Walk animation
+    this.animationInterval = setInterval(() => {
       let frameIndex = this.currentImage % this.IMAGES_WALKING.length;
       let path = this.IMAGES_WALKING[frameIndex];
       this.img = this.imageCache[path];
       this.currentImage++;
     }, 100);
+  }
+
+  deathAnimation() {
+    clearInterval(this.animationInterval);
+    const deadSprite = new Image();
+    deadSprite.src = this.deadImage;
+    this.img = deadSprite;
+    this.speed = 0;  
   }
 }
