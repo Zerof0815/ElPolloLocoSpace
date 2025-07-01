@@ -3,7 +3,7 @@ class World {
   background = level1.background;
   enemies = [];
   asteroids = [];
-  enboss = new Endboss(ENDBOSS.WALK[0], 500, 500, 3, ENDBOSS.WALK);
+  enboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
   statusBar = new StatusBar();
   bottles = [];
   canvas;

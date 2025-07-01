@@ -21,7 +21,7 @@ class Endboss extends MovableObject {
       this.loadImagesIntoCache(ENDBOSS.ATTACK);
 
       // comment out if endboss should move
-      // this.moveToTargetX(460);
+      this.moveToTargetX(460);
       this.startAnimation(ENDBOSS.WALK, 200, true);
     }
 
@@ -45,6 +45,8 @@ class Endboss extends MovableObject {
     }
 
     moveToTargetX(targetX) {
+        if (this.movementInterval) clearInterval(this.movementInterval);
+        
         this.movementInterval = setInterval(() => {
             if (this.x > targetX) {
                 this.x -= this.speed;
