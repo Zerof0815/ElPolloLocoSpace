@@ -8,6 +8,7 @@ class Endboss extends MovableObject {
     imageCache = {};
     animationInterval;
     movementInterval;
+    isMoving = false;
 
     constructor(imagePath, height, width, speed, walkingImages) {
       super().loadImage(imagePath);
@@ -19,10 +20,6 @@ class Endboss extends MovableObject {
       this.loadImagesIntoCache(ENDBOSS.WALK);
       this.loadImagesIntoCache(ENDBOSS.ALERT);
       this.loadImagesIntoCache(ENDBOSS.ATTACK);
-
-      // comment out if endboss should move
-      this.moveToTargetX(460);
-      this.startAnimation(ENDBOSS.WALK, 200, true);
     }
 
     startAnimation(imageArray, intervalTime, loop = true, onComplete = null) {
@@ -45,7 +42,6 @@ class Endboss extends MovableObject {
     }
 
     moveToTargetX(targetX) {
-        if (this.movementInterval) clearInterval(this.movementInterval);
         
         this.movementInterval = setInterval(() => {
             if (this.x > targetX) {
@@ -62,5 +58,11 @@ class Endboss extends MovableObject {
                 }, 3000);
             }
         }, 1000 / 30);
+    }
+
+    startMoving() {
+        this.isMoving = true;
+        this.moveToTargetX(460);
+        this.startAnimation(ENDBOSS.WALK, 200, true);
     }
 }

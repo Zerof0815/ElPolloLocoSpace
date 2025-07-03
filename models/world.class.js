@@ -3,9 +3,10 @@ class World {
   background = level1.background;
   enemies = [];
   asteroids = [];
-  enboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
+  endboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
   statusBar = new StatusBar();
   bottles = [];
+  chickenScore = 0;
   canvas;
   ctx;
   keyboard;
@@ -20,6 +21,7 @@ class World {
     this.spawnChicken(this);
     this.spawnAsteroids(this);
     this.checkCollisions();
+    this.checkChickenScoreForEndboss()
   }
 
   setWorld() {
@@ -33,7 +35,7 @@ class World {
     this.fromArrayAddToMap(this.enemies);
     this.fromArrayAddToMap(this.bottles);
     this.addToMap(this.character);
-    this.addToMap(this.enboss);
+    this.addToMap(this.endboss);
     this.addToMap(this.statusBar);
 
     //constantly execute draw()
@@ -146,7 +148,8 @@ class World {
     if (enemy.chickenLifes <= 0 && !enemy.isDead) {
       enemy.isDead = true;
       enemy.deathAnimation();
-
+      this.chickenScore++;
+      
       setTimeout(() => {
         const index = this.enemies.indexOf(enemy);
         if (index > -1) {
@@ -190,7 +193,7 @@ class World {
   }
 
   spawnChicken(world) {
-    if (isTabActive) {
+    if (isTabActive && this.chickenScore <= 5) {
       const isSmall = Math.random() < 0.5;
       const y = Math.floor(Math.random() * (world.canvas.height - 125) + 50);
 
@@ -279,5 +282,13 @@ class World {
   spawnAsteroids(world) {
     this.spawnRock(world);
     this.spawnPlanet(world);
+  }
+
+  checkChickenScoreForEndboss() {
+    setInterval(() => {
+      if (this.chickenScore >= 5 && !this.endboss.isMoving) {
+        this.endboss.startMoving();
+      }
+    }, 500);
   }
 }
