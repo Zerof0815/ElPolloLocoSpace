@@ -79,11 +79,6 @@ class Endboss extends MovableObject {
         if (this.isDead) return;
         this.isDead = true;
 
-        // ATTACK-Animation läuft weiter → also NICHT stoppen!
-        // Aber falls du willst, kannst du sicherheitshalber den Loop neu starten:
-        this.startAnimation(ENDBOSS.ATTACK, 200, true);
-
-        // Starte Explosionen & Bewegung
         this.startExplosionLoop();
         this.startDeathMovement();
     }
@@ -91,7 +86,7 @@ class Endboss extends MovableObject {
     startExplosionLoop() {
         this.explosionInterval = setInterval(() => {
             this.spawnExplosion();
-        }, 200); // Alle 200ms eine neue Explosion
+        }, 200);
     }
 
     spawnExplosion() {
@@ -104,10 +99,7 @@ class Endboss extends MovableObject {
 
         const explosion = new Explosion(randomX, randomY);
         this.explosions.push(explosion);
-        console.log(this.explosions);
-        
 
-        // Explosion nach 1s wieder entfernen
         setTimeout(() => {
             const index = this.explosions.indexOf(explosion);
             if (index > -1) {
@@ -118,7 +110,7 @@ class Endboss extends MovableObject {
 
     startDeathMovement() {
         this.deathMoveInterval = setInterval(() => {
-            this.y += 1; // Sinkt langsam
+            this.y += 1;
         }, 1000 / 30);
     }
 

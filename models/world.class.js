@@ -29,6 +29,11 @@ class World {
   }
 
   draw() {
+    if (!isTabActive) {
+      setTimeout(() => this.draw(), 200);
+      return;
+    }
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fromArrayAddToMap(this.background);
     this.fromArrayAddToMap(this.enemies);
@@ -132,17 +137,17 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
-      if (this.character.isDead) return;
+      if (this.character.isDead || !isTabActive) return;
       this.enemies = this.checkObjectCollisions(this.enemies);
     }, 1000 / 30);
 
     setInterval(() => {
-      if (this.character.isDead) return;
+      if (this.character.isDead || !isTabActive) return;
       this.asteroids = this.checkObjectCollisions(this.asteroids);
     }, 1000 / 30);
 
     setInterval(() => {
-      if (this.character.isDead) return;
+      if (this.character.isDead || !isTabActive) return;
       this.checkBottleHits();
     }, 1000 / 30);
   }
@@ -181,9 +186,7 @@ class World {
   handleBottleBossHit(bottle) {
     if (!this.endboss.isDead) {
     this.endboss.endbossLifes--;
-    console.log(this.endboss.endbossLifes);
     
-
       if (this.endboss.endbossLifes <= 0) {
         this.endboss.deathAnimation();
       }
@@ -219,7 +222,12 @@ class World {
   }
 
   spawnChicken(world) {
-    if (isTabActive && this.chickenScore <= 5) {
+    if (!isTabActive) {
+      setTimeout(() => this.spawnChicken(world), 1000);
+      return;
+    }
+
+    if (this.chickenScore <= 5) {
       const isSmall = Math.random() < 0.5;
       const y = Math.floor(Math.random() * (world.canvas.height - 125) + 50);
 
@@ -262,46 +270,52 @@ class World {
   }
 
   spawnRock(world) {
-    if (isTabActive) {
-      const rock = new Asteroid(
-        ASTEROIDS.ROCK,
-        Math.floor(Math.random() * 400) + 800,
-        Math.floor(Math.random() * 380),
-        50,
-        50,
-        1.5
-      );
-      world.asteroids.push(rock);
-
-      setTimeout(() => {
-        const index = world.background.indexOf(rock);
-        if (index > -1) {
-          world.background.splice(index, 1);
-        }
-      }, 30000);
+    if (!isTabActive) {
+      setTimeout(() => this.spawnRock(world), 1000);
+      return;
     }
+
+    const rock = new Asteroid(
+      ASTEROIDS.ROCK,
+      Math.floor(Math.random() * 400) + 800,
+      Math.floor(Math.random() * 380),
+      50,
+      50,
+      1.5);
+    world.asteroids.push(rock);
+
+    setTimeout(() => {
+      const index = world.background.indexOf(rock);
+      if (index > -1) {
+        world.background.splice(index, 1);
+      }
+    }, 30000);
+
     setTimeout(() => this.spawnRock(world), 5000);
   }
 
   spawnPlanet(world) {
-    if (isTabActive) {
-      const planet = new Asteroid(
-        ASTEROIDS.PLANET,
-        800,
-        Math.floor(Math.random() * 380),
-        100,
-        100,
-        0.3
-      );
-      world.background.push(planet);
-
-      setTimeout(() => {
-        const index = world.background.indexOf(planet);
-        if (index > -1) {
-          world.background.splice(index, 1);
-        }
-      }, 180000);
+    if (!isTabActive) {
+      setTimeout(() => this.spawnPlanet(world), 1000);
+      return;
     }
+
+    const planet = new Asteroid(
+      ASTEROIDS.PLANET,
+      800,
+      Math.floor(Math.random() * 380),
+      100,
+      100,
+      0.3);
+    world.background.push(planet);
+
+    setTimeout(() => {
+      const index = world.background.indexOf(planet);
+      if (index > -1) {
+        world.background.splice(index, 1);
+      }
+    }, 180000);
+
     setTimeout(() => this.spawnPlanet(world), 60000);
   }
 
