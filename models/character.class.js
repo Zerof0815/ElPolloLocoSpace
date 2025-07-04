@@ -22,7 +22,7 @@ class Character extends MovableObject {
   };
 
   constructor() {
-    super().loadImage("../assets/img/2_character_pepe/3_jump/J-34.png");
+    super().loadImage("assets/img/2_character_pepe/3_jump/J-34.png");
     this.moveCharacter();
     this.loadImagesIntoCache(PEPE_ANIMATION.HURT);
   }
