@@ -121,6 +121,8 @@ class World {
 
   checkObjectCollisions(objectArray) {
     return objectArray.filter((object) => {
+      if (object.isDead) return true;
+
       if (this.character.isColliding(object)) {
         return !this.handleCharacterCollision();
       }

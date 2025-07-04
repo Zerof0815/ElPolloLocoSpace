@@ -5,6 +5,7 @@ class Chicken extends MovableObject {
   width;
   chickenLifes;
   deadImage;
+  isDead = false;
   IMAGES_WALKING;
   objectCollisionOffset = {
     left: 15,
