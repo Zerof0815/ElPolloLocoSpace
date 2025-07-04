@@ -31,11 +31,12 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fromArrayAddToMap(this.background);
-    this.fromArrayAddToMap(this.asteroids);
     this.fromArrayAddToMap(this.enemies);
-    this.fromArrayAddToMap(this.bottles);
     this.addToMap(this.character);
     this.addToMap(this.endboss);
+    this.fromArrayAddToMap(this.asteroids);
+    this.fromArrayAddToMap(this.bottles);
+    this.endboss.drawExplosions(this.ctx);
     this.addToMap(this.statusBar);
 
     //constantly execute draw()
@@ -93,7 +94,7 @@ class World {
     this.ctx.stroke();
   }
 
-  handleCollision() {
+  handleCharacterCollision() {
     if (!this.character.collisionCooldown) {
       this.character.collisionCooldown = true;
 
@@ -121,7 +122,7 @@ class World {
   checkObjectCollisions(objectArray) {
     return objectArray.filter((object) => {
       if (this.character.isColliding(object)) {
-        return !this.handleCollision();
+        return !this.handleCharacterCollision();
       }
       return true;
     });
@@ -144,7 +145,7 @@ class World {
     }, 1000 / 30);
   }
 
-  handleBottleHit(bottle, enemy) {
+  handleBottleChickenHit(bottle, enemy) {
     if (enemy.chickenLifes <= 0 && !enemy.isDead) {
       enemy.isDead = true;
       enemy.deathAnimation();
@@ -175,12 +176,31 @@ class World {
     }
   }
 
+  handleBottleBossHit(bottle) {
+    if (!this.endboss.isDead) {
+    this.endboss.endbossLifes--;
+    console.log(this.endboss.endbossLifes);
+    
+
+      if (this.endboss.endbossLifes <= 0) {
+        this.endboss.deathAnimation();
+      }
+    }
+
+    const bottleIndex = this.bottles.indexOf(bottle);
+    if (bottleIndex > -1) {
+      bottle.breakAnimation(() => {
+        this.bottles.splice(bottleIndex, 1);
+      });
+    }
+  }
+
   checkBottleHits() {
     this.bottles.forEach((bottle) => {
       this.enemies.forEach((enemy) => {
         if (!bottle.isBreaking && bottle.isColliding(enemy) && enemy.chickenLifes >= 1) {
           enemy.chickenLifes--;
-          this.handleBottleHit(bottle, enemy);
+          this.handleBottleChickenHit(bottle, enemy);
         }
       });
 
@@ -189,6 +209,10 @@ class World {
           this.handleBottleAsteroidHit(bottle, asteroid);
         }
       });
+
+      if (!bottle.isBreaking && bottle.isColliding(this.endboss)) {
+        this.handleBottleBossHit(bottle);
+      }
     });
   }
 

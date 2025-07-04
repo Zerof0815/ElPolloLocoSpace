@@ -39,18 +39,19 @@ const ENDBOSS = {
       "../assets/img/4_enemie_boss_chicken/3_attack/G18.png",
       "../assets/img/4_enemie_boss_chicken/3_attack/G19.png",
       "../assets/img/4_enemie_boss_chicken/3_attack/G20.png"
-    ],
-    HURT: [
-      "../assets/img/4_enemie_boss_chicken/4_hurt/G21.png",
-      "../assets/img/4_enemie_boss_chicken/4_hurt/G22.png",
-      "../assets/img/4_enemie_boss_chicken/4_hurt/G23.png"
-    ],
-    DEAD: [
-      "../assets/img/4_enemie_boss_chicken/5_dead/G24.png",
-      "../assets/img/4_enemie_boss_chicken/5_dead/G25.png",
-      "../assets/img/4_enemie_boss_chicken/5_dead/G26.png"
     ]
 }
+
+const EXPLOSION = [
+  "assets/img/10_explosion_effect/explosion-f1.png",
+  "assets/img/10_explosion_effect/explosion-f2.png",
+  "assets/img/10_explosion_effect/explosion-f3.png",
+  "assets/img/10_explosion_effect/explosion-f4.png",
+  "assets/img/10_explosion_effect/explosion-f5.png",
+  "assets/img/10_explosion_effect/explosion-f6.png",
+  "assets/img/10_explosion_effect/explosion-f7.png",
+  "assets/img/10_explosion_effect/explosion-f8.png",
+]
 
 const BACKGROUND =
   "../assets/img/5_background/Blue Version/layered/blue-back.png";

@@ -5,10 +5,19 @@ class Endboss extends MovableObject {
     width;
     speed;
     currentImage = 0;
+    endbossLifes = 5;
+    isDead = false;
     imageCache = {};
     animationInterval;
     movementInterval;
     isMoving = false;
+    explosions = [];
+    objectCollisionOffset = {
+        left: 80,
+        right: 350,
+        top: 105,
+        bottom: 135,
+    };
 
     constructor(imagePath, height, width, speed, walkingImages) {
       super().loadImage(imagePath);
@@ -64,5 +73,58 @@ class Endboss extends MovableObject {
         this.isMoving = true;
         this.moveToTargetX(460);
         this.startAnimation(ENDBOSS.WALK, 200, true);
+    }
+
+    deathAnimation() {
+        if (this.isDead) return;
+        this.isDead = true;
+
+        // ATTACK-Animation läuft weiter → also NICHT stoppen!
+        // Aber falls du willst, kannst du sicherheitshalber den Loop neu starten:
+        this.startAnimation(ENDBOSS.ATTACK, 200, true);
+
+        // Starte Explosionen & Bewegung
+        this.startExplosionLoop();
+        this.startDeathMovement();
+    }
+
+    startExplosionLoop() {
+        this.explosionInterval = setInterval(() => {
+            this.spawnExplosion();
+        }, 200); // Alle 200ms eine neue Explosion
+    }
+
+    spawnExplosion() {
+        const hitboxWidth = this.width - this.objectCollisionOffset.left - this.objectCollisionOffset.right;
+        const hitboxHeight = this.height - this.objectCollisionOffset.top - this.objectCollisionOffset.bottom;
+
+        const randomX = this.x + this.objectCollisionOffset.left + Math.random() * hitboxWidth;
+        const randomY = this.y + this.objectCollisionOffset.top + Math.random() * hitboxHeight;
+
+
+        const explosion = new Explosion(randomX, randomY);
+        this.explosions.push(explosion);
+        console.log(this.explosions);
+        
+
+        // Explosion nach 1s wieder entfernen
+        setTimeout(() => {
+            const index = this.explosions.indexOf(explosion);
+            if (index > -1) {
+            this.explosions.splice(index, 1);
+            }
+        }, 400);
+    }
+
+    startDeathMovement() {
+        this.deathMoveInterval = setInterval(() => {
+            this.y += 1; // Sinkt langsam
+        }, 1000 / 30);
+    }
+
+    drawExplosions(ctx) {
+        this.explosions.forEach(explosion => {
+            explosion.draw(ctx);
+        });
     }
 }
