@@ -11,6 +11,7 @@ class Endboss extends MovableObject {
     animationInterval;
     movementInterval;
     isMoving = false;
+    hasSpit = false;
     explosions = [];
     objectCollisionOffset = {
         left: 80,
@@ -37,6 +38,7 @@ class Endboss extends MovableObject {
         this.animationInterval = setInterval(() => {
             const frame = imageArray[this.currentImage];
             this.img = this.imageCache[frame];
+
             this.currentImage++;
 
             if (this.currentImage >= imageArray.length) {
@@ -48,6 +50,19 @@ class Endboss extends MovableObject {
                 }
             }
         }, intervalTime);
+    }
+
+    startAttack() {
+        this.startAnimation(ENDBOSS.ATTACK, 200, true, null);
+        this.attackInterval = setInterval(() => {
+            if (this.currentImage === 6 && !this.hasSpit) {
+            this.spawnSpitChicken();
+            this.hasSpit = true;
+            }
+            if (this.currentImage === 0) {
+            this.hasSpit = false;
+            }
+        }, 1000/30);
     }
 
     moveToTargetX(targetX) {
@@ -62,7 +77,7 @@ class Endboss extends MovableObject {
 
                 setTimeout(() => {
                     this.startAnimation(ENDBOSS.ALERT, 150, false, () => {
-                        this.startAnimation(ENDBOSS.ATTACK, 200, true);
+                        this.startAttack(ENDBOSS.ATTACK, 200, true);
                     });
                 }, 3000);
             }
@@ -78,6 +93,8 @@ class Endboss extends MovableObject {
     deathAnimation() {
         if (this.isDead) return;
         this.isDead = true;
+
+        clearInterval(this.attackInterval);
 
         this.startExplosionLoop();
         this.startDeathMovement();
@@ -118,5 +135,14 @@ class Endboss extends MovableObject {
         this.explosions.forEach(explosion => {
             explosion.draw(ctx);
         });
+    }
+
+    spawnSpitChicken() {
+        if (!this.world) return;
+
+        const mouthX = this.x + this.width / 2;
+        const mouthY = this.y + this.height / 2;
+
+        this.world.spawnBossChicken(mouthX, mouthY);
     }
 }

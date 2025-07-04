@@ -15,6 +15,7 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.endboss.world = this;
     this.draw();
     this.setWorld();
     this.character.shoot();
@@ -74,7 +75,10 @@ class World {
   }
 
   fromArrayAddToMap(movableObjectInArray) {
-    movableObjectInArray.forEach((object) => {
+    movableObjectInArray.forEach(object => {
+      if (object.update) {
+        object.update();
+      }
       this.addToMap(object);
     });
   }
@@ -322,6 +326,38 @@ class World {
   spawnAsteroids(world) {
     this.spawnRock(world);
     this.spawnPlanet(world);
+  }
+
+  spawnBossChicken(bossX, bossY) {
+    const mouthX = bossX - 280;
+    const mouthY = bossY - 100;
+
+    const targetX = this.character.x + this.character.width / 2;
+    const targetY = this.character.y + this.character.height / 2;
+
+    // character: vektor
+    const dx = targetX - mouthX;
+    const dy = targetY - mouthY;
+    const angle = Math.atan2(dy, dx);
+
+    // angles for chickens
+    const angles = [
+      angle,
+      angle - Math.PI / 12,
+      angle + Math.PI / 12
+    ];
+
+    angles.forEach(a => {
+      const chicken = new SpitChicken(mouthX, mouthY, a);
+      this.enemies.push(chicken);
+
+      setTimeout(() => {
+        const index = this.enemies.indexOf(chicken);
+        if (index > -1) {
+          this.enemies.splice(index, 1);
+        }
+      }, 15000);
+    });
   }
 
   checkChickenScoreForEndboss() {
