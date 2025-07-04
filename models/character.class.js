@@ -90,7 +90,7 @@ class Character extends MovableObject {
     this.isDead = true;
 
     const deathImg = new Image();
-    deathImg.src = "../assets/img/2_character_pepe/5_dead/D-51.png";
+    deathImg.src = "assets/img/2_character_pepe/5_dead/D-51.png";
     this.img = deathImg;
 
     setTimeout(() => {
@@ -128,7 +128,7 @@ class Character extends MovableObject {
 
       if (frameIndex >= totalFrames) {
         clearInterval(hurtInterval);
-        this.loadImage("../assets/img/2_character_pepe/3_jump/J-34.png");
+        this.loadImage("assets/img/2_character_pepe/3_jump/J-34.png");
       }
     }, 100);
   }
