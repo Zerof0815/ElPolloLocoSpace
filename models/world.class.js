@@ -195,7 +195,7 @@ class World {
   }
 
   handleBottleBossHit(bottle) {
-    if (!this.endboss.isDead) {
+    if (!this.endboss.isDead && this.endboss.isAttackAble) {
     this.endboss.endbossLifes--;
     
       if (this.endboss.endbossLifes <= 0) {

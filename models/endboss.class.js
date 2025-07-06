@@ -6,12 +6,13 @@ class Endboss extends MovableObject {
     speed;
     currentImage = 0;
     endbossLifes = 5;
-    isDead = false;
     imageCache = {};
     animationInterval;
     movementInterval;
+    isDead = false;
     isMoving = false;
     hasSpit = false;
+    isAttackAble = false;
     explosions = [];
     objectCollisionOffset = {
         left: 80,
@@ -55,6 +56,7 @@ class Endboss extends MovableObject {
     }
 
     startAttack() {
+        this.isAttackAble = true;
         this.startAnimation(ENDBOSS.ATTACK, 200, true, null);
         this.attackInterval = setInterval(() => {
             if (this.currentImage === 6 && !this.hasSpit) {
@@ -68,7 +70,6 @@ class Endboss extends MovableObject {
     }
 
     moveToTargetX(targetX) {
-        
         this.movementInterval = setInterval(() => {
             if (this.x > targetX) {
                 this.x -= this.speed;
@@ -79,7 +80,7 @@ class Endboss extends MovableObject {
 
                 setTimeout(() => {
                     this.startAnimation(ENDBOSS.ALERT, 150, false, () => {
-                        this.startAttack(ENDBOSS.ATTACK, 200, true);
+                        this.startAttack();
                     });
                 }, 3000);
             }
