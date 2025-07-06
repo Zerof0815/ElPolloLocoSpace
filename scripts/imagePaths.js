@@ -78,6 +78,7 @@ const STATUS_BAR = {
     "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png",
     "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png"
   ],
+  CHICKEN_COUNTER: "assets/img/7_statusbars/3_icons/icon_health_endboss.png"
 };
 
 const BOTTLE_ANIMATION = {

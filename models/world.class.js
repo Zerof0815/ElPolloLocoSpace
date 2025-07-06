@@ -4,7 +4,8 @@ class World {
   enemies = [];
   asteroids = [];
   endboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
-  statusBar = new StatusBar();
+  healthBar = new StatusBar(10, -10, 158 / 2.5, 595 / 2.5);
+  chickenCounter = new Counter(550, 7, 50, 50, STATUS_BAR.CHICKEN_COUNTER);
   bottles = [];
   chickenScore = 0;
   backgroundMusic;
@@ -48,7 +49,8 @@ class World {
     this.fromArrayAddToMap(this.asteroids);
     this.fromArrayAddToMap(this.bottles);
     this.endboss.drawExplosions(this.ctx);
-    this.addToMap(this.statusBar);
+    this.addToMap(this.healthBar);
+    this.chickenCounter.drawIcon(this.ctx);
 
     //constantly execute draw()
     let self = this;
@@ -117,7 +119,7 @@ class World {
 
       const percentLife =
         (this.character.characterLifes / this.character.maxLifes) * 100;
-      this.statusBar.setPercentage(percentLife);
+      this.healthBar.setPercentage(percentLife);
 
       if (this.character.characterLifes <= 0 && !this.character.isDead) {
         this.character.triggerDeath();
@@ -165,7 +167,10 @@ class World {
     if (enemy.chickenLifes <= 0 && !enemy.isDead) {
       enemy.isDead = true;
       enemy.deathAnimation();
-      this.chickenScore++;
+      if (this.chickenScore <= 9) {
+        this.chickenScore++;
+        this.chickenCounter.increment();
+      }
       
       setTimeout(() => {
         const index = this.enemies.indexOf(enemy);
@@ -239,7 +244,7 @@ class World {
       return;
     }
 
-    if (this.chickenScore <= 5) {
+    if (this.chickenScore <= 10) {
       const isSmall = Math.random() < 0.5;
       const y = Math.floor(Math.random() * (world.canvas.height - 125) + 50);
 
@@ -370,7 +375,7 @@ class World {
 
   checkChickenScoreForEndboss() {
     setInterval(() => {
-      if (this.chickenScore >= 5 && !this.endboss.isMoving) {
+      if (this.chickenScore >= 10 && !this.endboss.isMoving) {
         this.endboss.startMoving();
       }
     }, 500);
