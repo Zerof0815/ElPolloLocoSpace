@@ -7,6 +7,7 @@ class World {
   statusBar = new StatusBar();
   bottles = [];
   chickenScore = 0;
+  backgroundMusic;
   canvas;
   ctx;
   keyboard;
@@ -23,6 +24,10 @@ class World {
     this.spawnAsteroids(this);
     this.checkCollisions();
     this.checkChickenScoreForEndboss()
+    this.backgroundMusic = new Audio("assets/audio/backgroundAudio.mp3");
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.1;
+    this.startBackgroundMusic();
   }
 
   setWorld() {
@@ -172,6 +177,7 @@ class World {
 
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
+      bottle.breakSound();
       bottle.breakAnimation(() => {
         this.bottles.splice(bottleIndex, 1);
       });
@@ -181,6 +187,7 @@ class World {
   handleBottleAsteroidHit(bottle, asteroid) {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
+      bottle.breakSound();
       bottle.breakAnimation(() => {
         this.bottles.splice(bottleIndex, 1);
       });
@@ -199,6 +206,7 @@ class World {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
       bottle.breakAnimation(() => {
+        bottle.breakSound();
         this.bottles.splice(bottleIndex, 1);
       });
     }
@@ -366,5 +374,16 @@ class World {
         this.endboss.startMoving();
       }
     }, 500);
+  }
+
+  startBackgroundMusic() {
+    this.backgroundMusic.play().catch((error) => {
+      console.warn('Autoplay wurde blockiert:', error);
+    });
+  }
+
+  stopBackgroundMusic() {
+    this.backgroundMusic.pause();
+    this.backgroundMusic.currentTime = 0;
   }
 }

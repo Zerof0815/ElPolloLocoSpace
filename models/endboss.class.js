@@ -19,6 +19,7 @@ class Endboss extends MovableObject {
         top: 105,
         bottom: 135,
     };
+    explosionAudio;
 
     constructor(imagePath, height, width, speed, walkingImages) {
       super().loadImage(imagePath);
@@ -26,6 +27,7 @@ class Endboss extends MovableObject {
       this.width = width;
       this.speed = speed;
       this.IMAGES_WALKING = walkingImages;
+      this.explosionAudio = new Audio("assets/audio/explosion.mp3");
 
       this.loadImagesIntoCache(ENDBOSS.WALK);
       this.loadImagesIntoCache(ENDBOSS.ALERT);
@@ -102,6 +104,7 @@ class Endboss extends MovableObject {
 
     startExplosionLoop() {
         this.explosionInterval = setInterval(() => {
+            this.explosionSound();
             this.spawnExplosion();
         }, 200);
     }
@@ -144,5 +147,11 @@ class Endboss extends MovableObject {
         const mouthY = this.y + this.height / 2;
 
         this.world.spawnBossChicken(mouthX, mouthY);
+    }
+
+    explosionSound() {
+        const boom = new Audio("assets/audio/explosion.mp3");
+        boom.volume = 0.1;
+        boom.play();
     }
 }

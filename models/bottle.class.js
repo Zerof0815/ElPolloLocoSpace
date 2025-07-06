@@ -7,6 +7,7 @@ class Bottle extends MovableObject {
     top: 10,
     bottom: 10,
   };
+  bottleAudio;
 
   constructor(x, y) {
     super();
@@ -21,6 +22,7 @@ class Bottle extends MovableObject {
     this.loadImagesIntoCache(BOTTLE_ANIMATION.BREAK);
     this.moveRight();
     this.animate();
+    this.bottleAudio = new Audio("assets/audio/bottleBreak.mp3");
   }
 
   animate() {
@@ -51,5 +53,11 @@ class Bottle extends MovableObject {
         if (removeCallback) removeCallback();
       }
     }, 50);
+  }
+
+  breakSound() {
+    this.bottleAudio = new Audio("assets/audio/bottleBreak.mp3");
+    this.bottleAudio.volume = 0.2;
+    this.bottleAudio.play();
   }
 }

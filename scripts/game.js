@@ -67,3 +67,7 @@ window.addEventListener("blur", () => {
 document.addEventListener("visibilitychange", () => {
   isTabActive = !document.hidden;
 });
+
+document.addEventListener("click", () => {
+    world.startBackgroundMusic();
+  }, { once: true });

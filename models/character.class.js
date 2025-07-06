@@ -20,11 +20,15 @@ class Character extends MovableObject {
     top: 45,
     bottom: 35,
   };
+  shootingAudio;
+  damageAudio;
 
   constructor() {
     super().loadImage("assets/img/2_character_pepe/3_jump/J-34.png");
     this.moveCharacter();
     this.loadImagesIntoCache(PEPE_ANIMATION.HURT);
+    this.shootingAudio = new Audio("assets/audio/shootAudio.mp3");
+    this.damageAudio = new Audio("assets/audio/bottleBreak.mp3")
   }
 
   moveCharacter() {
@@ -67,7 +71,7 @@ class Character extends MovableObject {
         this.world?.keyboard?.SPACE &&
         now - this.lastShotTime >= this.shootCooldown
       ) {
-        console.log("Auto Shooting!");
+        this.shootSound();
         this.lastShotTime = now;
 
         const bottle = new Bottle(
@@ -114,6 +118,7 @@ class Character extends MovableObject {
   }
 
   characterGetsHit() {
+    this.damageSound();
     if (this.characterLifes <= 1) return;
 
     let frameIndex = 0;
@@ -131,5 +136,17 @@ class Character extends MovableObject {
         this.loadImage("assets/img/2_character_pepe/3_jump/J-34.png");
       }
     }, 100);
+  }
+
+  shootSound() {
+    this.shootingAudio = new Audio("assets/audio/shootAudio.mp3");
+    this.shootingAudio.volume = 0.1;
+    this.shootingAudio.play()
+  }
+
+  damageSound() {
+    this.shootingAudio = new Audio("assets/audio/bottleBreak.mp3");
+    this.shootingAudio.volume = 0.2;
+    this.shootingAudio.play()
   }
 }
