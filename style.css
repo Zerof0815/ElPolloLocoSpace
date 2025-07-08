@@ -2,17 +2,72 @@
     margin: 0;
 }
 
-canvas {
-    background-color: black;
+@font-face {
+    font-family: "zabras";
+    src:url("fonts/zabars.regular.ttf") format("truetype");
 }
 
-.game-window {
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+body {
+    background-image: url("assets/img/5_background/Blue Version/bcg1.png");
+    background-position: center;
+    width: 100%;
+    height: 100vh;
+    font-family: "zabras", Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    justify-content: center;
+    gap: 30px;
+}
+
+canvas {
+    display: block;
+    border: solid white 2px;
+}
+
+h1 {
+    color: white;
+    font-size: 56px;
+    letter-spacing: 3px;
+    text-shadow: 4px 4px 4px rgb(255, 255, 255, 0.3);
+}
+
+@media only screen and (max-width: 720px){
+    .game-window {
+        width: 100%;
+    }
+
+    canvas {
+        width: 100%;
+        border-left: none;
+        border-right: none;
+    }
+
+    h1 {
+        font-size: 48px;
+    }
+}
+
+@media only screen and (max-height: 480px){
+    .game-window {
+        height: 100vh;
+    }
+    
+    canvas {
+        height: 100vh;
+        border-top: none;
+        border-bottom: none;
+    }
+}
+
+@media (max-height: 600px) {
+    h1 {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 32px;
+    }
 }
