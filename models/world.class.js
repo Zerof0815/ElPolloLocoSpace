@@ -4,7 +4,8 @@ class World {
   enemies = [];
   asteroids = [];
   endboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
-  healthBar = new StatusBar(10, -10, 158 / 2.5, 595 / 2.5);
+  healthBar = new StatusBar(10, -10, 158 / 2.5, 595 / 2.5, STATUS_BAR.HEALTH);
+  bossHealthBar = new StatusBar(400, 400, 158 / 2, 595 / 2, STATUS_BAR.BOSS_HEALTH);
   chickenCounter = new Counter(550, 7, 50, 50, STATUS_BAR.CHICKEN_COUNTER);
   bottles = [];
   chickenScore = 0;
@@ -50,6 +51,7 @@ class World {
     this.fromArrayAddToMap(this.bottles);
     this.endboss.drawExplosions(this.ctx);
     this.addToMap(this.healthBar);
+    this.addToMap(this.bossHealthBar);
     this.chickenCounter.drawIcon(this.ctx);
 
     //constantly execute draw()
@@ -202,6 +204,10 @@ class World {
   handleBottleBossHit(bottle) {
     if (!this.endboss.isDead && this.endboss.isAttackAble) {
     this.endboss.endbossLifes--;
+
+    const percentLife =
+        (this.endboss.endbossLifes / this.endboss.endbossMaxLifes) * 100;
+      this.bossHealthBar.setPercentage(percentLife);
     
       if (this.endboss.endbossLifes <= 0) {
         this.endboss.deathAnimation();

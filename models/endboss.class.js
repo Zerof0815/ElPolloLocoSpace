@@ -6,6 +6,7 @@ class Endboss extends MovableObject {
     speed;
     currentImage = 0;
     endbossLifes = 5;
+    endbossMaxLifes = 5;
     imageCache = {};
     animationInterval;
     movementInterval;
