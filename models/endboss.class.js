@@ -107,7 +107,7 @@ class Endboss extends MovableObject {
         this.explosionInterval = setInterval(() => {
             this.explosionSound();
             this.spawnExplosion();
-        }, 200);
+        }, 400);
     }
 
     spawnExplosion() {
@@ -151,7 +151,7 @@ class Endboss extends MovableObject {
     }
 
     explosionSound() {
-        const boom = new Audio("assets/audio/explosion.mp3");
+        const boom = this.explosionAudio.cloneNode();
         boom.volume = 0.1;
         boom.play();
     }

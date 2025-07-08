@@ -56,8 +56,8 @@ class Bottle extends MovableObject {
   }
 
   breakSound() {
-    this.bottleAudio = new Audio("assets/audio/bottleBreak.mp3");
-    this.bottleAudio.volume = 0.2;
-    this.bottleAudio.play();
+    const bottleBreakSound = this.bottleAudio.cloneNode();
+    bottleBreakSound.volume = 0.2;
+    bottleBreakSound.play();
   }
 }

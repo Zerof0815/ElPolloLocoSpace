@@ -139,14 +139,14 @@ class Character extends MovableObject {
   }
 
   shootSound() {
-    this.shootingAudio = new Audio("assets/audio/shootAudio.mp3");
-    this.shootingAudio.volume = 0.1;
-    this.shootingAudio.play()
+    const bottleShoot = this.shootingAudio.cloneNode();
+    bottleShoot.volume = 0.1;
+    bottleShoot.play()
   }
 
   damageSound() {
-    this.shootingAudio = new Audio("assets/audio/bottleBreak.mp3");
-    this.shootingAudio.volume = 0.2;
-    this.shootingAudio.play()
+    const gettingHit = this.damageAudio.cloneNode();
+    gettingHit.volume = 0.2;
+    gettingHit.play()
   }
 }

@@ -3,29 +3,27 @@ class Counter extends DrawableObject {
   y;
   height;
   width;
-  iconImage;
-  value = 0;
+  deadChickens = 0;
 
   constructor(x, y, height, width, iconPath) {
     super();
+    this.loadImage(iconPath);
     this.x = x;
     this.y = y;
     this.height = height;
     this.width = width;
-    this.iconImage = new Image();
-    this.iconImage.src = iconPath;
   }
 
   increment() {
-    this.value++;
+    this.deadChickens++;
   }
 
   drawIcon(ctx) {
-    ctx.drawImage(this.iconImage, this.x, this.y, this.width, this.height);
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 
     ctx.font = "30px Arial";
     ctx.fillStyle = "white";
 
-    ctx.fillText(`${this.value} / 10`, this.x + this.width + 10, this.y + this.height / 1.5);
+    ctx.fillText(`${this.deadChickens} / 10`, this.x + this.width + 10, this.y + this.height / 1.5);
   }
 }
