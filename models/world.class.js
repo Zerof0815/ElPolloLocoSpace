@@ -37,11 +37,6 @@ class World {
   }
 
   draw() {
-    if (!isTabActive) {
-      setTimeout(() => this.draw(), 200);
-      return;
-    }
-
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fromArrayAddToMap(this.background);
     this.fromArrayAddToMap(this.enemies);
@@ -150,17 +145,17 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
-      if (this.character.isDead || !isTabActive) return;
+      if (this.character.isDead) return;
       this.enemies = this.checkObjectCollisions(this.enemies);
     }, 1000 / 30);
 
     setInterval(() => {
-      if (this.character.isDead || !isTabActive) return;
+      if (this.character.isDead) return;
       this.asteroids = this.checkObjectCollisions(this.asteroids);
     }, 1000 / 30);
 
     setInterval(() => {
-      if (this.character.isDead || !isTabActive) return;
+      if (this.character.isDead) return;
       this.checkBottleHits();
     }, 1000 / 30);
   }
@@ -245,12 +240,7 @@ class World {
   }
 
   spawnChicken(world) {
-    if (!isTabActive) {
-      setTimeout(() => this.spawnChicken(world), 1000);
-      return;
-    }
-
-    if (this.chickenScore <= 10) {
+    if (this.chickenScore <= 9) {
       const isSmall = Math.random() < 0.5;
       const y = Math.floor(Math.random() * (world.canvas.height - 125) + 50);
 
@@ -264,8 +254,9 @@ class World {
           world.enemies.splice(index, 1);
         }
       }, 15000);
+
+      setTimeout(() => this.spawnChicken(world), 3000);
     }
-    setTimeout(() => this.spawnChicken(world), 3000);
   }
 
   createChicken(isSmall) {
@@ -293,11 +284,6 @@ class World {
   }
 
   spawnRock(world) {
-    if (!isTabActive) {
-      setTimeout(() => this.spawnRock(world), 1000);
-      return;
-    }
-
     const rock = new Asteroid(
       ASTEROIDS.ROCK,
       Math.floor(Math.random() * 400) + 800,
@@ -318,11 +304,6 @@ class World {
   }
 
   spawnPlanet(world) {
-    if (!isTabActive) {
-      setTimeout(() => this.spawnPlanet(world), 1000);
-      return;
-    }
-
     const planet = new Asteroid(
       ASTEROIDS.PLANET,
       800,
@@ -354,12 +335,10 @@ class World {
     const targetX = this.character.x + this.character.width / 2;
     const targetY = this.character.y + this.character.height / 2;
 
-    // character: vektor
     const dx = targetX - mouthX;
     const dy = targetY - mouthY;
     const angle = Math.atan2(dy, dx);
 
-    // angles for chickens
     const angles = [
       angle,
       angle - Math.PI / 12,
@@ -388,9 +367,7 @@ class World {
   }
 
   startBackgroundMusic() {
-    this.backgroundMusic.play().catch((error) => {
-      console.warn('Autoplay wurde blockiert:', error);
-    });
+    this.backgroundMusic.play()
   }
 
   stopBackgroundMusic() {

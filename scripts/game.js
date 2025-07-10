@@ -1,7 +1,6 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let isTabActive = true;
 
 function init() {
     canvas = document.getElementById("canvas");
@@ -62,10 +61,6 @@ window.addEventListener("mouseup", (e) => {
 
 window.addEventListener("blur", () => {
   keyboard.UP = keyboard.LEFT = keyboard.DOWN = keyboard.RIGHT = keyboard.SPACE = false;
-});
-
-document.addEventListener("visibilitychange", () => {
-  isTabActive = !document.hidden;
 });
 
 document.addEventListener("click", () => {
