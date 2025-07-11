@@ -32,15 +32,47 @@ h1 {
     text-shadow: 4px 4px 4px rgb(255, 255, 255, 0.3);
 }
 
-@media only screen and (max-width: 720px){
-    .game-window {
-        width: 100%;
-    }
+.joystick {
+    position: fixed;
+    left: 50px;
+    bottom: 30px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    touch-action: none;
+}
 
+.stick {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    touch-action: none;
+}
+
+.crosshair {
+    background: url("assets/img/svg/crosshair.svg") no-repeat center/contain;
+    background-color: transparent;
+    position: fixed;
+    right: 50px;
+    bottom: 30px;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    touch-action: none;
+}
+
+@media only screen and (max-width: 720px){
     canvas {
         width: 100%;
-        border-left: none;
-        border-right: none;
+        border: none;
     }
 
     h1 {
@@ -48,21 +80,16 @@ h1 {
     }
 }
 
-@media only screen and (max-height: 480px){
-    .game-window {
-        height: 100vh;
-    }
-    
-    canvas {
-        height: 100vh;
-        border-top: none;
-        border-bottom: none;
-    }
-}
-
 @media (max-height: 600px) {
     h1 {
         display: none;
+    }
+}
+
+@media only screen and (max-height: 480px){
+    canvas {
+        height: 100vh;
+        border: none;
     }
 }
 

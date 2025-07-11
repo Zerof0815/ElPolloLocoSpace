@@ -5,7 +5,7 @@ class World {
   asteroids = [];
   endboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
   healthBar = new StatusBar(10, -10, 158 / 2.5, 595 / 2.5, STATUS_BAR.HEALTH);
-  bossHealthBar = new StatusBar(400, 400, 158 / 2, 595 / 2, STATUS_BAR.BOSS_HEALTH);
+  bossHealthBar = new StatusBar(210, 400, 158 / 2, 595 / 2, STATUS_BAR.BOSS_HEALTH);
   chickenCounter = new Counter(550, 7, 50, 50, STATUS_BAR.CHICKEN_COUNTER);
   bottles = [];
   chickenScore = 0;
@@ -46,7 +46,7 @@ class World {
     this.fromArrayAddToMap(this.bottles);
     this.endboss.drawExplosions(this.ctx);
     this.addToMap(this.healthBar);
-    this.addToMap(this.bossHealthBar);
+    if (this.endboss.isMoving === true) this.addToMap(this.bossHealthBar);
     this.chickenCounter.drawIcon(this.ctx);
 
     //constantly execute draw()
