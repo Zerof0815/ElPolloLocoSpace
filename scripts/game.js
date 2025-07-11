@@ -1,10 +1,13 @@
 let canvas;
 let world;
+let joystick;
+let crosshair = document.getElementById("crosshair");
 let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById("canvas");
     world = new World(canvas, keyboard);
+    joystick = new Joystick("joystick", "stick", keyboard)
 }
 
 window.addEventListener("keydown", (e) => {
@@ -66,3 +69,11 @@ window.addEventListener("blur", () => {
 document.addEventListener("click", () => {
     world.startBackgroundMusic();
   }, { once: true });
+
+crosshair.addEventListener("touchstart", () => {
+  keyboard.SPACE = true;
+});
+
+crosshair.addEventListener("touchend", () => {
+  keyboard.SPACE = false;
+});
