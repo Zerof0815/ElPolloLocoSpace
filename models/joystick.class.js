@@ -7,35 +7,44 @@ class Joystick {
     this.dragging = false;
     this.maxDistance = 50;
 
-    this.joystick.addEventListener("touchstart", () => this.start(), false);
+    this.joystick.addEventListener("touchstart", (e) => this.start(e), false);
     this.joystick.addEventListener("touchmove", (e) => this.move(e), false);
-    this.joystick.addEventListener("touchend", () => this.end(), false);
+    this.joystick.addEventListener("touchend", (e) => this.end(e), false);
 
-    this.joystick.addEventListener("mousedown", () => this.start(), false);
+    this.joystick.addEventListener("mousedown", (e) => this.start(e), false);
     window.addEventListener("mousemove", (e) => this.move(e), false);
-    window.addEventListener("mouseup", () => this.end(), false);
+    window.addEventListener("mouseup", (e) => this.end(e), false);
   }
 
-  start() {
+  start(e) {
     this.dragging = true;
+    //save for multible fingers on touchscreen
+    if (e && e.changedTouches) {
+      this.touchId = e.changedTouches[0].identifier;
+    }
   }
 
   move(e) {
     if (!this.dragging) return;
 
-    const rect = this.joystick.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
     let clientX, clientY;
 
     if (e.touches) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
+      // find finger with correct id
+      const touch = Array.from(e.touches).find(
+        (t) => t.identifier === this.touchId
+      );
+      if (!touch) return;
+      clientX = touch.clientX;
+      clientY = touch.clientY;
     } else {
       clientX = e.clientX;
       clientY = e.clientY;
     }
+
+    const rect = this.joystick.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
     const dx = clientX - centerX;
     const dy = clientY - centerY;
@@ -57,7 +66,7 @@ class Joystick {
     this.keyboard.RIGHT = normalizedX > 0.3;
   }
 
-  end() {
+  end(e) {
     this.dragging = false;
     this.stick.style.transform = `translate(-50%, -50%)`;
 
