@@ -61,6 +61,25 @@ function updateMobileOverlayAndControls() {
   }
 }
 
+function pauseWhenVertical() {
+  for (let i = 1; i < 1000; i++) {
+    clearInterval(i);
+  }
+}
+
+function checkMobileOrientation() {
+  setInterval(() => {
+    if (screen.width <= screen.height && mobileAndTabletCheck()) {
+      isDeviceVertical = true;
+      mobileOverlay.style.display = "flex";
+    } else {
+      isDeviceVertical = false;
+      mobileOverlay.style.display = "none";
+    }
+    updateMobileOverlayAndControls();
+  }, 500);
+}
+
 function handleMobileControlls() {
   crosshair.addEventListener("touchstart", () => {
     keyboard.SPACE = true;
@@ -77,19 +96,6 @@ function handleMobileControlls() {
   crosshair.addEventListener("mouseup", () => {
     keyboard.SPACE = false;
   });
-}
-
-function checkMobileOrientation() {
-  setInterval(() => {
-    if (screen.width <= screen.height && mobileAndTabletCheck()) {
-      isDeviceVertical = true;
-      mobileOverlay.style.display = "flex";
-    } else {
-      isDeviceVertical = false;
-      mobileOverlay.style.display = "none";
-    }
-    updateMobileOverlayAndControls();
-  }, 500);
 }
 
 window.addEventListener("keydown", (e) => {

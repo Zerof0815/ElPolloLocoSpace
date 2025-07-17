@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Pollo Loco Space</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="scripts/imagePaths.js"></script>
+    <script src="models/world.class.js"></script>
+    <script src="models/drawable-objects.class.js"></script>
+    <script src="models/movable-objects.class.js"></script>
+    <script src="models/status-bar.class.js"></script>
+    <script src="models/counter.class.js"></script>
+    <script src="models/background.class.js"></script>
+    <script src="models/asteroid.class.js"></script>
+    <script src="models/character.class.js"></script>
+    <script src="models/bottle.class.js"></script>
+    <script src="models/chicken.class.js"></script>
+    <script src="models/explosion.class.js"></script>
+    <script src="models/spit-chicken.class.js"></script>
+    <script src="models/endboss.class.js"></script>
+    <script src="models/keyboard.class.js"></script>
+    <script src="models/joystick.class.js"></script>
+    <script src="models/level.class.js"></script>
+    <script src="levels/level1.js"></script>
+    <script src="scripts/game.js" defer></script>
+</head>
+<body onload="init();">
+    <div class="mobile-overlay" id="mobile-overlay">
+        <span>Please rotate your device</span>
+    </div>
+    <h1>El Pollo Loco Space</h1>
+        
+    <canvas id="canvas" width="720" height="480"></canvas>
+
+    <div class="joystick" id="joystick">
+        <div class="stick" id="stick"></div>
+    </div>
+    <div class="crosshair" id="crosshair"></div>
+</body>
+</html>
