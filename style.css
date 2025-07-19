@@ -27,9 +27,8 @@ canvas {
 
 h1 {
     color: white;
-    font-size: 56px;
+    font-size: 80px;
     letter-spacing: 3px;
-    text-shadow: 4px 4px 4px rgb(255, 255, 255, 0.3);
 }
 
 .joystick {
@@ -92,9 +91,7 @@ h1 {
 .start-screen {
     width: 720px;
     height: 480px;
-    border: 2px solid #fff;
     border-radius: 20px;
-    background-color: rgb(43, 43, 84);
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -130,8 +127,8 @@ a {
     justify-content: center;
 }
 
-a:active {
-    transform: scale(0.95);
+a:hover {
+    transform: scale(1.05);
 }
 
 .how-to-button {
@@ -151,16 +148,15 @@ a:active {
     transform-origin: center center;
 }
 
-.how-to-button:active {
-    transform: scale(0.95);
+.how-to-button:hover {
+    transform: scale(1.05);
 }
 
 .how-to-window {
     width: 720px;
     height: 480px;
     border: 2px solid #fff;
-    border-radius: 20px;
-    background-color: rgb(43, 43, 84);
+    background-color: rgba(0, 0, 63, 0.8);
     display: none;
     justify-content: space-evenly;
     align-items: center;
@@ -203,10 +199,6 @@ a:active {
         border: none;
     }
 
-    h1 {
-        font-size: 48px;
-    }
-
     .start-screen {
         width: 100%;
         border: none;
@@ -242,11 +234,5 @@ a:active {
     .how-to-window {
         height: 100vh;
         border: none;
-    }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 32px;
     }
 }
