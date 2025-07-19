@@ -105,3 +105,8 @@ const BOTTLE_ANIMATION = {
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
   ],
 };
+
+const END_SCREEN = {
+  GAME_OVER: "assets/img/You won, you lost/You lost b.png",
+  WIN: "assets/img/You won, you lost/You Won B.png",
+};

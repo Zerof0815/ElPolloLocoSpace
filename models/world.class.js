@@ -1,4 +1,5 @@
 class World {
+  canvas;
   character = new Character();
   background = level1.background;
   enemies = [];
@@ -13,12 +14,15 @@ class World {
     STATUS_BAR.BOSS_HEALTH
   );
   chickenCounter = new Counter(550, 7, 50, 50, STATUS_BAR.CHICKEN_COUNTER);
+  winnerScreen = new EndGameScreen(canvas.width, canvas.height, END_SCREEN.WIN);
+  looserScreen = new EndGameScreen(canvas.width, canvas.height, END_SCREEN.GAME_OVER);
   bottles = [];
   chickenScore = 0;
   backgroundMusic;
-  canvas;
   ctx;
   keyboard;
+  isPlayerDead = false;
+  isEndbossDead = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -54,6 +58,8 @@ class World {
     this.addToMap(this.healthBar);
     if (this.endboss.isMoving === true) this.addToMap(this.bossHealthBar);
     this.chickenCounter.drawIcon(this.ctx);
+    if (this.isEndbossDead === true) this.addToMap(this.winnerScreen);
+    if (this.character.characterLifes <= 0 === true) this.addToMap(this.looserScreen);
 
     //constantly execute draw()
     let self = this;
@@ -212,6 +218,7 @@ class World {
 
       if (this.endboss.endbossLifes <= 0) {
         this.endboss.deathAnimation();
+        this.isEndbossDead = true;
       }
     }
 

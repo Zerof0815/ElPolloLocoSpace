@@ -100,8 +100,8 @@ class Endboss extends MovableObject {
 
         clearInterval(this.attackInterval);
 
-        this.startExplosionLoop();
         this.startDeathMovement();
+        this.startExplosionLoop();
     }
 
     startExplosionLoop() {
@@ -109,6 +109,10 @@ class Endboss extends MovableObject {
             this.explosionSound();
             this.spawnExplosion();
         }, 400);
+
+        setTimeout(() => {
+          clearInterval(this.explosionInterval);
+        }, 15000);
     }
 
     spawnExplosion() {

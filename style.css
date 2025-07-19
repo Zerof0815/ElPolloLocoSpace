@@ -218,6 +218,12 @@ a:active {
     }
 }
 
+@media (max-height: 600px) {
+    h1 {
+        display: none;
+    }
+}
+
 @media only screen and (max-height: 480px){
     canvas {
         height: 100vh;
