@@ -5,7 +5,13 @@ class World {
   asteroids = [];
   endboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
   healthBar = new StatusBar(10, -10, 158 / 2.5, 595 / 2.5, STATUS_BAR.HEALTH);
-  bossHealthBar = new StatusBar(210, 400, 158 / 2, 595 / 2, STATUS_BAR.BOSS_HEALTH);
+  bossHealthBar = new StatusBar(
+    210,
+    400,
+    158 / 2,
+    595 / 2,
+    STATUS_BAR.BOSS_HEALTH
+  );
   chickenCounter = new Counter(550, 7, 50, 50, STATUS_BAR.CHICKEN_COUNTER);
   bottles = [];
   chickenScore = 0;
@@ -25,7 +31,7 @@ class World {
     this.spawnChicken(this);
     this.spawnAsteroids(this);
     this.checkCollisions();
-    this.checkChickenScoreForEndboss()
+    this.checkChickenScoreForEndboss();
     this.backgroundMusic = new Audio("assets/audio/backgroundAudio.mp3");
     this.backgroundMusic.loop = true;
     this.backgroundMusic.volume = 0.1;
@@ -79,7 +85,7 @@ class World {
   }
 
   fromArrayAddToMap(movableObjectInArray) {
-    movableObjectInArray.forEach(object => {
+    movableObjectInArray.forEach((object) => {
       if (object.update) {
         object.update();
       }
@@ -168,7 +174,7 @@ class World {
         this.chickenScore++;
         this.chickenCounter.increment();
       }
-      
+
       setTimeout(() => {
         const index = this.enemies.indexOf(enemy);
         if (index > -1) {
@@ -198,12 +204,12 @@ class World {
 
   handleBottleBossHit(bottle) {
     if (!this.endboss.isDead && this.endboss.isAttackAble) {
-    this.endboss.endbossLifes--;
+      this.endboss.endbossLifes--;
 
-    const percentLife =
+      const percentLife =
         (this.endboss.endbossLifes / this.endboss.endbossMaxLifes) * 100;
       this.bossHealthBar.setPercentage(percentLife);
-    
+
       if (this.endboss.endbossLifes <= 0) {
         this.endboss.deathAnimation();
       }
@@ -221,7 +227,11 @@ class World {
   checkBottleHits() {
     this.bottles.forEach((bottle) => {
       this.enemies.forEach((enemy) => {
-        if (!bottle.isBreaking && bottle.isColliding(enemy) && enemy.chickenLifes >= 1) {
+        if (
+          !bottle.isBreaking &&
+          bottle.isColliding(enemy) &&
+          enemy.chickenLifes >= 1
+        ) {
           enemy.chickenLifes--;
           this.handleBottleChickenHit(bottle, enemy);
         }
@@ -290,7 +300,8 @@ class World {
       Math.floor(Math.random() * 380),
       50,
       50,
-      1.5);
+      1.5
+    );
     world.asteroids.push(rock);
 
     setTimeout(() => {
@@ -310,7 +321,8 @@ class World {
       Math.floor(Math.random() * 380),
       100,
       100,
-      0.3);
+      0.3
+    );
     world.background.push(planet);
 
     setTimeout(() => {
@@ -339,13 +351,9 @@ class World {
     const dy = targetY - mouthY;
     const angle = Math.atan2(dy, dx);
 
-    const angles = [
-      angle,
-      angle - Math.PI / 12,
-      angle + Math.PI / 12
-    ];
+    const angles = [angle, angle - Math.PI / 12, angle + Math.PI / 12];
 
-    angles.forEach(a => {
+    angles.forEach((a) => {
       const chicken = new SpitChicken(mouthX, mouthY, a);
       this.enemies.push(chicken);
 
@@ -366,12 +374,37 @@ class World {
     }, 500);
   }
 
-  startBackgroundMusic() {
-    this.backgroundMusic.play()
-  }
-
   stopBackgroundMusic() {
     this.backgroundMusic.pause();
     this.backgroundMusic.currentTime = 0;
+  }
+
+  soundIsReady() {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject("User did not interact. Sound cannot be played.");
+      }, 1000 * 30); // z.B. 30 Sekunden warten
+
+      const handler = () => {
+        clearTimeout(timeout);
+        document.removeEventListener("keydown", handler);
+        document.removeEventListener("click", handler);
+        document.removeEventListener("touchstart", handler);
+        setTimeout(resolve, 10);
+      };
+
+      document.addEventListener("keydown", handler);
+      document.addEventListener("click", handler);
+      document.addEventListener("touchstart", handler);
+    });
+  }
+
+  async startBackgroundMusic() {
+    try {
+      await this.soundIsReady();
+      this.backgroundMusic.play();
+    } catch (e) {
+      console.info("Error playing sound");
+    }
   }
 }
