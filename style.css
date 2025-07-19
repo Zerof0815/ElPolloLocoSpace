@@ -123,9 +123,15 @@ a {
     width: 165px;
     background-color: white;
     border-radius: 10px;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    transform-origin: center center;
     /* i know bad practice */
     display: flex;
     justify-content: center;
+}
+
+a:active {
+    transform: scale(0.95);
 }
 
 .how-to-button {
@@ -141,6 +147,12 @@ a {
     display: flex;
     justify-content: center;
     border-radius: 10px;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    transform-origin: center center;
+}
+
+.how-to-button:active {
+    transform: scale(0.95);
 }
 
 .how-to-window {
@@ -203,12 +215,6 @@ a {
     .how-to-window {
         width: 100%;
         border: none;
-    }
-}
-
-@media (max-height: 600px) {
-    h1 {
-        display: none;
     }
 }
 

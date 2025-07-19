@@ -6,9 +6,11 @@
     <title>El Pollo Loco Space</title>
     <link rel="icon" type="image/x-icon" href="assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png">
     <link rel="stylesheet" href="style.css">
-    <script src="scripts/main-menu.js"></script>
 </head>
-<body>
+<body onload="init()">
+    <div class="mobile-overlay" id="mobile-overlay">
+        <span>Please rotate your device</span>
+    </div>
     <div class="start-screen" id="start-screen">
         <h1>El Pollo Loco Space</h1>
         <div class="buttons-window">
@@ -30,5 +32,6 @@
             </div>
         </div>
     </div>
+    <script src="scripts/main-menu.js"></script>
 </body>
 </html>

@@ -61,12 +61,6 @@ function updateMobileOverlayAndControls() {
   }
 }
 
-function pauseWhenVertical() {
-  for (let i = 1; i < 1000; i++) {
-    clearInterval(i);
-  }
-}
-
 function checkMobileOrientation() {
   setInterval(() => {
     if (screen.width <= screen.height && mobileAndTabletCheck()) {
