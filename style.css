@@ -219,8 +219,12 @@ a:active {
 }
 
 @media (max-height: 600px) {
-    h1 {
+    .h1-game-window {
         display: none;
+    }
+
+    .h1-main-menu {
+        display: block;
     }
 }
 
