@@ -22,13 +22,14 @@ class Character extends MovableObject {
   };
   shootingAudio;
   damageAudio;
+  userHasInteracted = false;
 
   constructor() {
     super().loadImage("assets/img/2_character_pepe/3_jump/J-34.png");
     this.moveCharacter();
     this.loadImagesIntoCache(PEPE_ANIMATION.HURT);
     this.shootingAudio = new Audio("assets/audio/shootAudio.mp3");
-    this.damageAudio = new Audio("assets/audio/bottleBreak.mp3")
+    this.damageAudio = new Audio("assets/audio/bottleBreak.mp3");
   }
 
   moveCharacter() {
@@ -141,12 +142,31 @@ class Character extends MovableObject {
   shootSound() {
     const bottleShoot = this.shootingAudio.cloneNode();
     bottleShoot.volume = 0.1;
-    bottleShoot.play()
+    bottleShoot.play();
   }
 
-  damageSound() {
+  async damageSound() {
+    await this.waitForUserInteraction();
     const gettingHit = this.damageAudio.cloneNode();
     gettingHit.volume = 0.2;
-    gettingHit.play()
+    gettingHit.play();
+  }
+
+  waitForUserInteraction() {
+    return new Promise((resolve) => {
+      if (this.userHasInteracted) return resolve();
+
+      const handler = () => {
+        this.userHasInteracted = true;
+        document.removeEventListener("keydown", handler);
+        document.removeEventListener("click", handler);
+        document.removeEventListener("touchstart", handler);
+        resolve();
+      };
+
+      document.addEventListener("keydown", handler);
+      document.addEventListener("click", handler);
+      document.addEventListener("touchstart", handler);
+    });
   }
 }

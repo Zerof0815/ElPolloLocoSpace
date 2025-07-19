@@ -383,7 +383,7 @@ class World {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject("User did not interact. Sound cannot be played.");
-      }, 1000 * 30); // z.B. 30 Sekunden warten
+      }, 1000 * 30);
 
       const handler = () => {
         clearTimeout(timeout);
