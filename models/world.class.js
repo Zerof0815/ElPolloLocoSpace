@@ -29,6 +29,8 @@ class World {
   });
   soundButton = new GameButton(470, 15, GAME_BUTTONS.SOUND, () => {
     this.isMuted = !this.isMuted;
+    localStorage.setItem("isMuted", this.isMuted ? "true" : "false");
+
     this.isGameMuted();
   });
   bottles = [];
@@ -48,6 +50,7 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.checkLocalStorageIfMuted();
     this.endboss.world = this;
     this.draw();
     this.setWorld();
@@ -67,7 +70,7 @@ class World {
     this.looseSound = new Audio("assets/audio/loose.mp3");
     this.winSound = new Audio("assets/audio/winning.mp3");
     this.winSound.volume = 0.1;
-    this.startBackgroundMusic();
+    if (!this.isMuted) this.startBackgroundMusic();
     this.buttonMouseHover(this.canvas);
     this.buttonMouseClick(this.canvas);
   }
@@ -545,6 +548,19 @@ class World {
 
     if (this.backgroundMusic) {
       this.backgroundMusic.play();
+    }
+  }
+
+  checkLocalStorageIfMuted() {
+    const savedMute = localStorage.getItem("isMuted");
+    this.isMuted = savedMute === "true";
+
+    if (this.isMuted) {
+      this.muteAllSounds();
+      this.soundButton.loadImage(GAME_BUTTONS.NO_SOUND);
+    } else {
+      this.unmuteAllSounds();
+      this.soundButton.loadImage(GAME_BUTTONS.SOUND);
     }
   }
 }
