@@ -1,18 +1,15 @@
 const mobileOverlay = document.getElementById("mobile-overlay");
+const impressum = document.getElementById("impressum");
+const startScreen = document.getElementById("start-screen");
+const howToScreen = document.getElementById("how-to-window");
 let isDeviceVertical;
 
 function howToPlayButton() {
-  const startScreen = document.getElementById("start-screen");
-  const howToScreen = document.getElementById("how-to-window");
-
   startScreen.style.display = "none";
   howToScreen.style.display = "flex";
 }
 
 function backToMainMenu() {
-  const startScreen = document.getElementById("start-screen");
-  const howToScreen = document.getElementById("how-to-window");
-
   startScreen.style.display = "flex";
   howToScreen.style.display = "none";
 }
@@ -48,4 +45,14 @@ function checkMobileOrientation() {
     }
     updateMobileOverlay();
   }, 500);
+}
+
+function openImpressum() {
+  startScreen.style.display = "none";
+  impressum.style.display = "block";
+}
+
+function closeImpressum() {
+  startScreen.style.display = "flex";
+  impressum.style.display = "none";
 }

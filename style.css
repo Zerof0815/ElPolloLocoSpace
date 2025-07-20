@@ -1,5 +1,6 @@
 * {
     margin: 0;
+    box-sizing: border-box;
 }
 
 @font-face {
@@ -162,6 +163,28 @@ a:hover {
     align-items: center;
     flex-direction: column;
     position: relative;
+}
+
+.impressum {
+    position: relative;
+    width: 720px;
+    height: 480px;
+    border: 2px solid #fff;
+    background-color: rgba(0, 0, 63, 0.8);
+    display: none;
+    overflow: auto;
+    color: white;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+.impressum h1 {
+    font-size: 40px;
+}
+
+.impressum a {
+    font-size: 16px;
+    width: 250px;
 }
 
 .controlls {
