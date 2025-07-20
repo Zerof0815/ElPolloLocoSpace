@@ -19,6 +19,10 @@ class World {
   bottles = [];
   chickenScore = 0;
   backgroundMusic;
+  bossRoar;
+  bossMusic;
+  looseSound;
+  winSound
   ctx;
   keyboard;
   isPlayerDead = false;
@@ -39,6 +43,14 @@ class World {
     this.backgroundMusic = new Audio("assets/audio/backgroundAudio.mp3");
     this.backgroundMusic.loop = true;
     this.backgroundMusic.volume = 0.1;
+    this.bossRoar = new Audio("assets/audio/bossRoar.mp3");
+    this.bossRoar.volume = 0.1;
+    this.bossMusic = new Audio("assets/audio/bossFight.mp3");
+    this.bossMusic.loop = true;
+    this.bossMusic.volume = 0.1;
+    this.looseSound = new Audio("assets/audio/loose.mp3");
+    this.winSound = new Audio("assets/audio/winning.mp3");
+    this.winSound.volume = 0.1;
     this.startBackgroundMusic();
   }
 
@@ -131,6 +143,10 @@ class World {
       this.healthBar.setPercentage(percentLife);
 
       if (this.character.characterLifes <= 0 && !this.character.isDead) {
+        this.endMusic(this.backgroundMusic);
+        setTimeout(() => {
+          this.playSoundOnce(this.looseSound);
+        }, 2000);
         this.character.triggerDeath();
       }
 
@@ -217,6 +233,8 @@ class World {
       this.bossHealthBar.setPercentage(percentLife);
 
       if (this.endboss.endbossLifes <= 0) {
+        this.endMusic(this.bossMusic);
+        this.playSoundOnce(this.winSound);
         this.endboss.deathAnimation();
         this.isEndbossDead = true;
       }
@@ -376,6 +394,9 @@ class World {
   checkChickenScoreForEndboss() {
     setInterval(() => {
       if (this.chickenScore >= 10 && !this.endboss.isMoving) {
+        this.endMusic(this.backgroundMusic);
+        this.playSoundOnce(this.bossRoar);
+        this.startBossMusic();
         this.endboss.startMoving();
       }
     }, 500);
@@ -413,5 +434,19 @@ class World {
     } catch (e) {
       console.info("Error playing sound");
     }
+  }
+
+  endMusic(music) {
+    music.pause();
+  }
+
+  playSoundOnce(sound) {
+    sound.play();
+  }
+
+  startBossMusic() {
+    setTimeout(() => {
+      this.bossMusic.play();
+    }, 3000);
   }
 }

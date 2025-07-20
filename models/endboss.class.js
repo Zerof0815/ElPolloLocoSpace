@@ -22,6 +22,7 @@ class Endboss extends MovableObject {
         bottom: 135,
     };
     explosionAudio;
+    shootAudio;
 
     constructor(imagePath, height, width, speed, walkingImages) {
       super().loadImage(imagePath);
@@ -30,6 +31,7 @@ class Endboss extends MovableObject {
       this.speed = speed;
       this.IMAGES_WALKING = walkingImages;
       this.explosionAudio = new Audio("assets/audio/explosion.mp3");
+      this.shootAudio = new Audio("assets/audio/bossShoot.mp3");
 
       this.loadImagesIntoCache(ENDBOSS.WALK);
       this.loadImagesIntoCache(ENDBOSS.ALERT);
@@ -61,6 +63,7 @@ class Endboss extends MovableObject {
         this.startAnimation(ENDBOSS.ATTACK, 200, true, null);
         this.attackInterval = setInterval(() => {
             if (this.currentImage === 6 && !this.hasSpit) {
+            this.shootSound();
             this.spawnSpitChicken();
             this.hasSpit = true;
             }
@@ -159,5 +162,9 @@ class Endboss extends MovableObject {
         const boom = this.explosionAudio.cloneNode();
         boom.volume = 0.1;
         boom.play();
+    }
+
+    shootSound() {
+        this.shootAudio.play();
     }
 }
