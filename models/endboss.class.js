@@ -159,12 +159,14 @@ class Endboss extends MovableObject {
     }
 
     explosionSound() {
+        if (this.world.isMuted) return;
         const boom = this.explosionAudio.cloneNode();
         boom.volume = 0.1;
         boom.play();
     }
 
     shootSound() {
+        if (this.world.isMuted) return;
         this.shootAudio.play();
     }
 }

@@ -84,6 +84,25 @@ function handleMobileControlls() {
   });
 }
 
+function restartGame() {
+  for (let i = 1; i < 9999; i++) {
+    clearInterval(i);
+    clearTimeout(i);
+    cancelAnimationFrame(i);
+  }
+
+  document.querySelectorAll("audio").forEach((audio) => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+
+  const oldCanvas = document.getElementById("canvas");
+  const newCanvas = oldCanvas.cloneNode(true);
+  oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
+
+  world = new World(newCanvas, keyboard);
+}
+
 window.addEventListener("keydown", (e) => {
   switch (e.code) {
     case "KeyW":

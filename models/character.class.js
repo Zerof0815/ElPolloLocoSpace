@@ -140,12 +140,14 @@ class Character extends MovableObject {
   }
 
   shootSound() {
+    if (this.world.isMuted) return;
     const bottleShoot = this.shootingAudio.cloneNode();
     bottleShoot.volume = 0.1;
     bottleShoot.play();
   }
 
   async damageSound() {
+    if (this.world.isMuted) return;
     await this.waitForUserInteraction();
     const gettingHit = this.damageAudio.cloneNode();
     gettingHit.volume = 0.2;

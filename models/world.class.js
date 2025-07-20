@@ -15,18 +15,34 @@ class World {
   );
   chickenCounter = new Counter(550, 7, 50, 50, STATUS_BAR.CHICKEN_COUNTER);
   winnerScreen = new EndGameScreen(canvas.width, canvas.height, END_SCREEN.WIN);
-  looserScreen = new EndGameScreen(canvas.width, canvas.height, END_SCREEN.GAME_OVER);
+  looserScreen = new EndGameScreen(
+    canvas.width,
+    canvas.height,
+    END_SCREEN.GAME_OVER
+  );
+  homeButton = new GameButton(310, 15, GAME_BUTTONS.HOME, () => {
+    window.location.href = "index.html";
+  });
+  restartButton = new GameButton(390, 15, GAME_BUTTONS.RESTART, () => {
+    this.endAudio(this.backgroundMusic);
+    restartGame();
+  });
+  soundButton = new GameButton(470, 15, GAME_BUTTONS.SOUND, () => {
+    this.isMuted = !this.isMuted;
+    this.isGameMuted();
+  });
   bottles = [];
   chickenScore = 0;
   backgroundMusic;
   bossRoar;
   bossMusic;
   looseSound;
-  winSound
+  winSound;
   ctx;
   keyboard;
   isPlayerDead = false;
   isEndbossDead = false;
+  isMuted = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -52,6 +68,8 @@ class World {
     this.winSound = new Audio("assets/audio/winning.mp3");
     this.winSound.volume = 0.1;
     this.startBackgroundMusic();
+    this.buttonMouseHover(this.canvas);
+    this.buttonMouseClick(this.canvas);
   }
 
   setWorld() {
@@ -71,7 +89,11 @@ class World {
     if (this.endboss.isMoving === true) this.addToMap(this.bossHealthBar);
     this.chickenCounter.drawIcon(this.ctx);
     if (this.isEndbossDead === true) this.addToMap(this.winnerScreen);
-    if (this.character.characterLifes <= 0 === true) this.addToMap(this.looserScreen);
+    if (this.character.characterLifes <= 0 === true)
+      this.addToMap(this.looserScreen);
+    this.addToMap(this.homeButton);
+    this.addToMap(this.restartButton);
+    this.addToMap(this.soundButton);
 
     //constantly execute draw()
     let self = this;
@@ -143,9 +165,9 @@ class World {
       this.healthBar.setPercentage(percentLife);
 
       if (this.character.characterLifes <= 0 && !this.character.isDead) {
-        this.endMusic(this.backgroundMusic);
+        this.endAudio(this.backgroundMusic);
         setTimeout(() => {
-          this.playSoundOnce(this.looseSound);
+          this.playAudio(this.looseSound);
         }, 2000);
         this.character.triggerDeath();
       }
@@ -207,7 +229,7 @@ class World {
 
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
-      bottle.breakSound();
+      if (!this.isMuted) bottle.breakSound();
       bottle.breakAnimation(() => {
         this.bottles.splice(bottleIndex, 1);
       });
@@ -217,7 +239,7 @@ class World {
   handleBottleAsteroidHit(bottle, asteroid) {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
-      bottle.breakSound();
+      if (!this.isMuted) bottle.breakSound();
       bottle.breakAnimation(() => {
         this.bottles.splice(bottleIndex, 1);
       });
@@ -233,8 +255,8 @@ class World {
       this.bossHealthBar.setPercentage(percentLife);
 
       if (this.endboss.endbossLifes <= 0) {
-        this.endMusic(this.bossMusic);
-        this.playSoundOnce(this.winSound);
+        this.endAudio(this.bossMusic);
+        this.playAudio(this.winSound);
         this.endboss.deathAnimation();
         this.isEndbossDead = true;
       }
@@ -243,7 +265,7 @@ class World {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
       bottle.breakAnimation(() => {
-        bottle.breakSound();
+        if (!this.isMuted) bottle.breakSound();
         this.bottles.splice(bottleIndex, 1);
       });
     }
@@ -394,8 +416,8 @@ class World {
   checkChickenScoreForEndboss() {
     setInterval(() => {
       if (this.chickenScore >= 10 && !this.endboss.isMoving) {
-        this.endMusic(this.backgroundMusic);
-        this.playSoundOnce(this.bossRoar);
+        this.endAudio(this.backgroundMusic);
+        this.playAudio(this.bossRoar);
         this.startBossMusic();
         this.endboss.startMoving();
       }
@@ -436,11 +458,12 @@ class World {
     }
   }
 
-  endMusic(music) {
-    music.pause();
+  endAudio(sound) {
+    sound.pause();
   }
 
-  playSoundOnce(sound) {
+  playAudio(sound) {
+    if (this.isMuted) return;
     sound.play();
   }
 
@@ -448,5 +471,80 @@ class World {
     setTimeout(() => {
       this.bossMusic.play();
     }, 3000);
+  }
+
+  buttonMouseHover(canvas) {
+    canvas.addEventListener("mousemove", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      const isHovering = [
+        this.homeButton,
+        this.restartButton,
+        this.soundButton,
+      ].some((btn) => btn.isHovered(mouseX, mouseY));
+
+      this.canvas.style.cursor = isHovering ? "pointer" : "default";
+    });
+  }
+
+  buttonMouseClick(canvas) {
+    canvas.addEventListener("click", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      this.homeButton.handleClick(mouseX, mouseY);
+      this.restartButton.handleClick(mouseX, mouseY);
+      this.soundButton.handleClick(mouseX, mouseY);
+    });
+  }
+
+  isGameMuted() {
+    if (this.isMuted) {
+      this.muteAllSounds();
+      this.soundButton.loadImage(GAME_BUTTONS.NO_SOUND);
+    } else {
+      this.unmuteAllSounds();
+      this.soundButton.loadImage(GAME_BUTTONS.SOUND);
+    }
+  }
+
+  muteAllSounds() {
+    const sounds = [
+      this.backgroundMusic,
+      this.bossRoar,
+      this.bossMusic,
+      this.looseSound,
+      this.winSound,
+    ];
+
+    sounds.forEach((sound) => {
+      if (sound) {
+        sound.pause();
+        sound.muted = true;
+      }
+    });
+  }
+
+  unmuteAllSounds() {
+    const sounds = [
+      this.backgroundMusic,
+      this.bossRoar,
+      this.bossMusic,
+      this.looseSound,
+      this.winSound,
+    ];
+
+    sounds.forEach((sound) => {
+      if (sound) {
+        sound.muted = false;
+      }
+    });
+
+    if (this.backgroundMusic) {
+      this.backgroundMusic.play();
+    }
   }
 }

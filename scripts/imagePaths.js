@@ -110,3 +110,10 @@ const END_SCREEN = {
   GAME_OVER: "assets/img/You won, you lost/You lost b.png",
   WIN: "assets/img/You won, you lost/You Won B.png",
 };
+
+const GAME_BUTTONS = {
+  HOME: "assets/img/game-buttons/home-button.png",
+  RESTART: "assets/img/game-buttons/restart-button.png",
+  SOUND: "assets/img/game-buttons/sound-button.png",
+  NO_SOUND: "assets/img/game-buttons/no-sound-button.png",
+};

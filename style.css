@@ -193,6 +193,21 @@ a:hover {
     border-radius: 100px;
 }
 
+.rainbow-text {
+  animation: rainbowColor 10s linear infinite;
+}
+
+@keyframes rainbowColor {
+  0%   { color: red; }
+  14%  { color: orange; }
+  28%  { color: yellow; }
+  42%  { color: green; }
+  57%  { color: cyan; }
+  71%  { color: blue; }
+  85%  { color: violet; }
+  100% { color: red; }
+}
+
 @media only screen and (max-width: 720px){
     canvas {
         width: 100%;
