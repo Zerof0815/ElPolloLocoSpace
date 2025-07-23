@@ -72,7 +72,7 @@ class World {
     this.winSound.volume = 0.1;
     if (!this.isMuted) this.startBackgroundMusic();
     this.buttonMouseHover(this.canvas);
-    this.buttonMouseClick(this.canvas);
+    this.buttonClick(this.canvas);
   }
 
   setWorld() {
@@ -492,16 +492,36 @@ class World {
     });
   }
 
-  buttonMouseClick(canvas) {
-    canvas.addEventListener("click", (event) => {
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
+  buttonClick(canvas) {
+    const handleClick = (event) => {
+      const { x, y } = this.getPointerPosition(event);
 
-      this.homeButton.handleClick(mouseX, mouseY);
-      this.restartButton.handleClick(mouseX, mouseY);
-      this.soundButton.handleClick(mouseX, mouseY);
+      this.homeButton.handleClick(x, y);
+      this.restartButton.handleClick(x, y);
+      this.soundButton.handleClick(x, y);
+    };
+
+    canvas.addEventListener("click", handleClick);
+
+    canvas.addEventListener("touchstart", (event) => {
+      handleClick(event);
     });
+  }
+
+  getPointerPosition(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const isTouch = event.touches && event.touches.length > 0;
+
+    const clientX = isTouch ? event.touches[0].clientX : event.clientX;
+    const clientY = isTouch ? event.touches[0].clientY : event.clientY;
+
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
+    return { x, y };
   }
 
   isGameMuted() {
