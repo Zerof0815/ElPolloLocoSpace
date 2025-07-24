@@ -41,6 +41,10 @@ class Bottle extends MovableObject {
     let frameIndex = 0;
     const totalFrames = BOTTLE_ANIMATION.BREAK.length;
 
+    this.breakAnimationInterval(frameIndex, totalFrames, removeCallback);
+  }
+
+  breakAnimationInterval(frameIndex, totalFrames, removeCallback) {
     const breakInterval = setInterval(() => {
       let currentFrame = frameIndex % BOTTLE_ANIMATION.BREAK.length;
       let path = BOTTLE_ANIMATION.BREAK[currentFrame];

@@ -36,31 +36,39 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.isDead) return;
 
-      if (this.world.keyboard.UP && this.y > 0) {
-        this.y -= this.speed;
-        this.targetAngle = -0.3;
-      } else if (
-        this.world.keyboard.DOWN &&
-        this.y + this.height < this.world.canvas.height
-      ) {
-        this.y += this.speed;
-        this.targetAngle = 0.3;
-      } else {
-        this.targetAngle = 0;
-      }
+      this.yMovement();
 
       this.angle += (this.targetAngle - this.angle) * this.smoothingFactor;
 
-      if (
-        this.world.keyboard.RIGHT &&
-        this.x + this.width < this.world.canvas.width
-      ) {
-        this.x += this.speed;
-      }
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.x -= this.speed;
-      }
+      this.xMovement();
     }, 1000 / 30);
+  }
+
+  yMovement() {
+    if (this.world.keyboard.UP && this.y > 0) {
+      this.y -= this.speed;
+      this.targetAngle = -0.3;
+    } else if (
+      this.world.keyboard.DOWN &&
+      this.y + this.height < this.world.canvas.height
+    ) {
+      this.y += this.speed;
+      this.targetAngle = 0.3;
+    } else {
+      this.targetAngle = 0;
+    }
+  }
+
+  xMovement() {
+    if (
+      this.world.keyboard.RIGHT &&
+      this.x + this.width < this.world.canvas.width
+    ) {
+      this.x += this.speed;
+    }
+    if (this.world.keyboard.LEFT && this.x > 0) {
+      this.x -= this.speed;
+    }
   }
 
   shoot() {
@@ -74,21 +82,29 @@ class Character extends MovableObject {
       ) {
         this.shootSound();
         this.lastShotTime = now;
+        const bottle = this.createBottle();
 
-        const bottle = new Bottle(
+        this.deleteBottle(bottle);
+      }
+    }, 1000 / 30);
+  }
+
+  createBottle() {
+    const bottle = new Bottle(
           this.x + this.width,
           this.y + this.height / 2
         );
-        this.world.bottles.push(bottle);
+    this.world.bottles.push(bottle);
+    return bottle;
+  }
 
-        setTimeout(() => {
-          const index = world.bottles.indexOf(bottle);
-          if (index > -1) {
-            this.world.bottles.splice(index, 1);
-          }
-        }, 1800);
+  deleteBottle(bottle) {
+    setTimeout(() => {
+      const index = world.bottles.indexOf(bottle);
+      if (index > -1) {
+        this.world.bottles.splice(index, 1);
       }
-    }, 1000 / 30);
+    }, 1800);
   }
 
   triggerDeath() {
@@ -125,6 +141,10 @@ class Character extends MovableObject {
     let frameIndex = 0;
     const totalFrames = PEPE_ANIMATION.HURT.length * 3;
 
+    this.characterDamageAnimation(frameIndex, totalFrames)
+  }
+
+  characterDamageAnimation(frameIndex, totalFrames) {
     const hurtInterval = setInterval(() => {
       let currentFrame = frameIndex % PEPE_ANIMATION.HURT.length;
       let path = PEPE_ANIMATION.HURT[currentFrame];

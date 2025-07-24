@@ -34,13 +34,15 @@ class MovableObject extends DrawableObject {
       bottom: 0,
     };
 
-    return (
-      this.x + this.width - offset1.right > movableObject.x + offset2.left &&
-      this.y + this.height - offset1.bottom > movableObject.y + offset2.top &&
-      this.x + offset1.left <
-        movableObject.x + movableObject.width - offset2.right &&
-      this.y + offset1.top <
-        movableObject.y + movableObject.height - offset2.bottom
-    );
+    return this.calculateHitbox(offset1, offset2, movableObject);
+  }
+
+  calculateHitbox(offset1, offset2, movableObject) {
+    return this.x + this.width - offset1.right > movableObject.x + offset2.left &&
+    this.y + this.height - offset1.bottom > movableObject.y + offset2.top &&
+    this.x + offset1.left <
+      movableObject.x + movableObject.width - offset2.right &&
+    this.y + offset1.top <
+      movableObject.y + movableObject.height - offset2.bottom;
   }
 }

@@ -82,27 +82,39 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fromArrayAddToMap(this.background);
-    this.fromArrayAddToMap(this.enemies);
-    this.addToMap(this.character);
-    this.addToMap(this.endboss);
-    this.fromArrayAddToMap(this.asteroids);
-    this.fromArrayAddToMap(this.bottles);
+    this.drawCollideables();
     this.endboss.drawExplosions(this.ctx);
-    this.addToMap(this.healthBar);
-    if (this.endboss.isMoving === true) this.addToMap(this.bossHealthBar);
-    this.chickenCounter.drawIcon(this.ctx);
-    if (this.isEndbossDead === true) this.addToMap(this.winnerScreen);
-    if (this.character.characterLifes <= 0 === true)
-      this.addToMap(this.looserScreen);
-    this.addToMap(this.homeButton);
-    this.addToMap(this.restartButton);
-    this.addToMap(this.soundButton);
+    this.drawUI();
+    this.drawbuttons();
 
     //constantly execute draw()
     let self = this;
     requestAnimationFrame(function () {
       self.draw();
     });
+  }
+
+  drawbuttons() {
+    this.addToMap(this.homeButton);
+    this.addToMap(this.restartButton);
+    this.addToMap(this.soundButton);
+  }
+
+  drawCollideables() {
+    this.fromArrayAddToMap(this.enemies);
+    this.addToMap(this.character);
+    this.addToMap(this.endboss);
+    this.fromArrayAddToMap(this.asteroids);
+    this.fromArrayAddToMap(this.bottles);
+  }
+
+  drawUI() {
+    this.addToMap(this.healthBar);
+    if (this.endboss.isMoving) this.addToMap(this.bossHealthBar);
+    this.chickenCounter.drawIcon(this.ctx);
+    if (this.isEndbossDead) this.addToMap(this.winnerScreen);
+    if (this.character.characterLifes <= 0)
+      this.addToMap(this.looserScreen);
   }
 
   addToMap(movableObject) {
@@ -114,17 +126,19 @@ class World {
     this.ctx.translate(centerX, centerY);
     this.ctx.rotate(movableObject.angle || 0);
 
-    this.ctx.drawImage(
+    this.ctx.drawImage(...this.movableObjectData(movableObject));
+
+    this.ctx.restore();
+  }
+
+  movableObjectData(movableObject) {
+    return [
       movableObject.img,
       -movableObject.width / 2,
       -movableObject.height / 2,
       movableObject.width,
-      movableObject.height
-    );
-
-    this.ctx.restore();
-    // shows hitbox
-    // this.drawRectangleForObject(movableObject);
+      movableObject.height,
+    ];
   }
 
   fromArrayAddToMap(movableObjectInArray) {
@@ -136,54 +150,45 @@ class World {
     });
   }
 
-  drawRectangleForObject(movableObject) {
-    let offset = movableObject.objectCollisionOffset || {
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    };
-
-    const x = movableObject.x + offset.left;
-    const y = movableObject.y + offset.top;
-    const width = movableObject.width - offset.left - offset.right;
-    const height = movableObject.height - offset.top - offset.bottom;
-
-    this.ctx.beginPath();
-    this.ctx.lineWidth = "1";
-    this.ctx.strokeStyle = "blue";
-    this.ctx.rect(x, y, width, height);
-    this.ctx.stroke();
-  }
-
   handleCharacterCollision() {
-    if (!this.character.collisionCooldown) {
-      if (this.isEndbossDead) return;
-      this.character.collisionCooldown = true;
-
-      this.character.characterGetsHit();
-      this.character.characterLifes--;
-
-      const percentLife =
-        (this.character.characterLifes / this.character.maxLifes) * 100;
-      this.healthBar.setPercentage(percentLife);
-
-      if (this.character.characterLifes <= 0 && !this.character.isDead) {
-        this.endAudio(this.backgroundMusic);
-        setTimeout(() => {
-          this.playAudio(this.looseSound);
-        }, 2000);
-        this.character.triggerDeath();
-      }
-
-      setTimeout(() => {
-        this.character.collisionCooldown = false;
-      }, 1000);
-
-      return true;
+    if (this.character.collisionCooldown || this.isEndbossDead) {
+      return false;
     }
 
-    return false;
+    this.character.collisionCooldown = true;
+    this.processCharacterHit();
+    this.updateHealthBar();
+    this.checkCharacterDeath();
+    this.resetCollisionCooldown();
+
+    return true;
+  }
+
+  processCharacterHit() {
+    this.character.characterGetsHit();
+    this.character.characterLifes--;
+  }
+
+  updateHealthBar() {
+    const percentLife =
+      (this.character.characterLifes / this.character.maxLifes) * 100;
+    this.healthBar.setPercentage(percentLife);
+  }
+
+  checkCharacterDeath() {
+    if (this.character.characterLifes <= 0 && !this.character.isDead) {
+      this.endAudio(this.backgroundMusic);
+      setTimeout(() => {
+        this.playAudio(this.looseSound);
+      }, 2000);
+      this.character.triggerDeath();
+    }
+  }
+
+  resetCollisionCooldown() {
+    setTimeout(() => {
+      this.character.collisionCooldown = false;
+    }, 1000);
   }
 
   checkObjectCollisions(objectArray) {
@@ -215,29 +220,44 @@ class World {
   }
 
   handleBottleChickenHit(bottle, enemy) {
-    if (enemy.chickenLifes <= 0 && !enemy.isDead) {
-      enemy.isDead = true;
-      enemy.deathAnimation();
-      if (this.chickenScore <= 9) {
-        this.chickenScore++;
-        this.chickenCounter.increment();
+    this.handleChickenHit(enemy);
+    this.handleBottleBreak(bottle);
+  }
+
+  handleChickenHit(enemy) {
+    if (enemy.chickenLifes > 0 || enemy.isDead) return;
+
+    enemy.isDead = true;
+    enemy.deathAnimation();
+    this.updateChickenScore();
+    this.removeEnemyAfterDelay(enemy);
+  }
+
+  updateChickenScore() {
+    if (this.chickenScore <= 9) {
+      this.chickenScore++;
+      this.chickenCounter.increment();
+    }
+  }
+
+  removeEnemyAfterDelay(enemy) {
+    setTimeout(() => {
+      const index = this.enemies.indexOf(enemy);
+      if (index > -1) {
+        this.enemies.splice(index, 1);
       }
+    }, 1000);
+  }
 
-      setTimeout(() => {
-        const index = this.enemies.indexOf(enemy);
-        if (index > -1) {
-          this.enemies.splice(index, 1);
-        }
-      }, 1000);
-    }
-
+  handleBottleBreak(bottle) {
     const bottleIndex = this.bottles.indexOf(bottle);
-    if (bottleIndex > -1) {
-      if (!this.isMuted) bottle.breakSound();
-      bottle.breakAnimation(() => {
-        this.bottles.splice(bottleIndex, 1);
-      });
-    }
+    if (bottleIndex < 0) return;
+
+    if (!this.isMuted) bottle.breakSound();
+
+    bottle.breakAnimation(() => {
+      this.bottles.splice(bottleIndex, 1);
+    });
   }
 
   handleBottleAsteroidHit(bottle, asteroid) {
@@ -251,53 +271,78 @@ class World {
   }
 
   handleBottleBossHit(bottle) {
-    if (!this.endboss.isDead && this.endboss.isAttackAble) {
-      this.endboss.endbossLifes--;
+    this.handleBossHit();
+    this.handleBossBottleBreak(bottle);
+  }
 
-      const percentLife =
-        (this.endboss.endbossLifes / this.endboss.endbossMaxLifes) * 100;
-      this.bossHealthBar.setPercentage(percentLife);
+  handleBossHit() {
+    if (this.endboss.isDead || !this.endboss.isAttackAble) return;
 
-      if (this.endboss.endbossLifes <= 0) {
-        this.endAudio(this.bossMusic);
-        this.playAudio(this.winSound);
-        this.endboss.deathAnimation();
-        this.isEndbossDead = true;
-      }
+    this.endboss.endbossLifes--;
+    this.updateBossHealthBar();
+
+    if (this.endboss.endbossLifes <= 0) {
+      this.handleBossDeath();
     }
+  }
 
+  updateBossHealthBar() {
+    const percentLife =
+      (this.endboss.endbossLifes / this.endboss.endbossMaxLifes) * 100;
+    this.bossHealthBar.setPercentage(percentLife);
+  }
+
+  handleBossDeath() {
+    this.endAudio(this.bossMusic);
+    this.playAudio(this.winSound);
+    this.endboss.deathAnimation();
+    this.isEndbossDead = true;
+  }
+
+  handleBossBottleBreak(bottle) {
     const bottleIndex = this.bottles.indexOf(bottle);
-    if (bottleIndex > -1) {
-      bottle.breakAnimation(() => {
-        if (!this.isMuted) bottle.breakSound();
-        this.bottles.splice(bottleIndex, 1);
-      });
-    }
+    if (bottleIndex < 0) return;
+
+    bottle.breakAnimation(() => {
+      if (!this.isMuted) bottle.breakSound();
+      this.bottles.splice(bottleIndex, 1);
+    });
   }
 
   checkBottleHits() {
     this.bottles.forEach((bottle) => {
-      this.enemies.forEach((enemy) => {
-        if (
-          !bottle.isBreaking &&
-          bottle.isColliding(enemy) &&
-          enemy.chickenLifes >= 1
-        ) {
-          enemy.chickenLifes--;
-          this.handleBottleChickenHit(bottle, enemy);
-        }
-      });
+      this.checkBottleEnemyHits(bottle);
+      this.checkBottleAsteroidHits(bottle);
+      this.checkBottleBossHit(bottle);
+    });
+  }
 
-      this.asteroids.forEach((asteroid) => {
-        if (!bottle.isBreaking && bottle.isColliding(asteroid)) {
-          this.handleBottleAsteroidHit(bottle, asteroid);
-        }
-      });
+  checkBottleEnemyHits(bottle) {
+    this.enemies.forEach((enemy) => {
+      const validHit =
+        !bottle.isBreaking &&
+        bottle.isColliding(enemy) &&
+        enemy.chickenLifes >= 1;
 
-      if (!bottle.isBreaking && bottle.isColliding(this.endboss)) {
-        this.handleBottleBossHit(bottle);
+      if (validHit) {
+        enemy.chickenLifes--;
+        this.handleBottleChickenHit(bottle, enemy);
       }
     });
+  }
+
+  checkBottleAsteroidHits(bottle) {
+    this.asteroids.forEach((asteroid) => {
+      if (!bottle.isBreaking && bottle.isColliding(asteroid)) {
+        this.handleBottleAsteroidHit(bottle, asteroid);
+      }
+    });
+  }
+
+  checkBottleBossHit(bottle) {
+    if (!bottle.isBreaking && bottle.isColliding(this.endboss)) {
+      this.handleBottleBossHit(bottle);
+    }
   }
 
   spawnChicken(world) {
@@ -309,12 +354,7 @@ class World {
       newChicken.y = y;
       world.enemies.push(newChicken);
 
-      setTimeout(() => {
-        const index = world.enemies.indexOf(newChicken);
-        if (index > -1) {
-          world.enemies.splice(index, 1);
-        }
-      }, 15000);
+      this.deleteObjectAfterTimeout(newChicken, world.enemies, 15000);
 
       setTimeout(() => this.spawnChicken(world), 3000);
     }
@@ -355,12 +395,7 @@ class World {
     );
     world.asteroids.push(rock);
 
-    setTimeout(() => {
-      const index = world.background.indexOf(rock);
-      if (index > -1) {
-        world.background.splice(index, 1);
-      }
-    }, 30000);
+    this.deleteObjectAfterTimeout(rock, world.asteroids, 30000);
 
     setTimeout(() => this.spawnRock(world), 5000);
   }
@@ -376,14 +411,18 @@ class World {
     );
     world.background.push(planet);
 
-    setTimeout(() => {
-      const index = world.background.indexOf(planet);
-      if (index > -1) {
-        world.background.splice(index, 1);
-      }
-    }, 180000);
+    this.deleteObjectAfterTimeout(planet, world.background, 180000);
 
     setTimeout(() => this.spawnPlanet(world), 60000);
+  }
+
+  deleteObjectAfterTimeout(object, collection, timeout) {
+    setTimeout(() => {
+      const index = collection.indexOf(object);
+      if (index > -1) {
+        collection.splice(index, 1);
+      }
+    }, timeout);
   }
 
   spawnAsteroids(world) {
@@ -392,29 +431,48 @@ class World {
   }
 
   spawnBossChicken(bossX, bossY) {
-    const mouthX = bossX - 280;
-    const mouthY = bossY - 100;
+    const mouthPos = this.calculateMouthPosition(bossX, bossY);
+    const targetPos = this.getCharacterCenter();
 
-    const targetX = this.character.x + this.character.width / 2;
-    const targetY = this.character.y + this.character.height / 2;
+    const baseAngle = this.calculateAngle(mouthPos, targetPos);
+    const angles = this.calculateSpreadAngles(baseAngle);
 
-    const dx = targetX - mouthX;
-    const dy = targetY - mouthY;
-    const angle = Math.atan2(dy, dx);
+    angles.forEach((angle) => this.spawnAndScheduleChicken(mouthPos, angle));
+  }
 
-    const angles = [angle, angle - Math.PI / 12, angle + Math.PI / 12];
+  calculateMouthPosition(bossX, bossY) {
+    return {
+      x: bossX - 280,
+      y: bossY - 100,
+    };
+  }
 
-    angles.forEach((a) => {
-      const chicken = new SpitChicken(mouthX, mouthY, a);
-      this.enemies.push(chicken);
+  getCharacterCenter() {
+    return {
+      x: this.character.x + this.character.width / 2,
+      y: this.character.y + this.character.height / 2,
+    };
+  }
 
-      setTimeout(() => {
-        const index = this.enemies.indexOf(chicken);
-        if (index > -1) {
-          this.enemies.splice(index, 1);
-        }
-      }, 15000);
-    });
+  calculateAngle(from, to) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    return Math.atan2(dy, dx);
+  }
+
+  calculateSpreadAngles(baseAngle) {
+    const spread = Math.PI / 12;
+    return [baseAngle, baseAngle - spread, baseAngle + spread];
+  }
+
+  spawnAndScheduleChicken(position, angle) {
+    const chicken = new SpitChicken(position.x, position.y, angle);
+    this.enemies.push(chicken);
+
+    setTimeout(() => {
+      const index = this.enemies.indexOf(chicken);
+      if (index > -1) this.enemies.splice(index, 1);
+    }, 15000);
   }
 
   checkChickenScoreForEndboss() {
@@ -439,18 +497,29 @@ class World {
         reject("User did not interact. Sound cannot be played.");
       }, 1000 * 30);
 
-      const handler = () => {
-        clearTimeout(timeout);
-        document.removeEventListener("keydown", handler);
-        document.removeEventListener("click", handler);
-        document.removeEventListener("touchstart", handler);
-        setTimeout(resolve, 10);
-      };
-
-      document.addEventListener("keydown", handler);
-      document.addEventListener("click", handler);
-      document.addEventListener("touchstart", handler);
+      this.createUserInteractionHandler(resolve, timeout);
     });
+  }
+
+  createUserInteractionHandler(resolve, timeout) {
+    const handler = () => {
+      clearTimeout(timeout);
+      this.removeUserInteractionListeners(handler);
+      setTimeout(resolve, 10);
+    };
+    this.addUserInteractionListeners(handler);
+  }
+
+  addUserInteractionListeners(handler) {
+    document.addEventListener("keydown", handler);
+    document.addEventListener("click", handler);
+    document.addEventListener("touchstart", handler);
+  }
+
+  removeUserInteractionListeners(handler) {
+    document.removeEventListener("keydown", handler);
+    document.removeEventListener("click", handler);
+    document.removeEventListener("touchstart", handler);
   }
 
   async startBackgroundMusic() {
@@ -567,6 +636,10 @@ class World {
       }
     });
 
+    this.musicHandler();
+  }
+
+  musicHandler() {
     if (this.isEndbossDead) {
       return;
     } else if (this.endboss?.isMoving) {

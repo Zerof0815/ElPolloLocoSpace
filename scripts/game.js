@@ -31,25 +31,33 @@ function initMobileControls() {
 
 function updateMobileOverlayAndControls() {
   if (isDeviceVertical) {
-    mobileOverlay.style.display = "flex";
-
-    if (joystickContainer) {
-      joystickContainer.style.display = "none";
-    }
-    if (crosshair) {
-      crosshair.style.display = "none";
-    }
+    hideMobileControlls();
   } else {
     mobileOverlay.style.display = "none";
 
     if (isTouchDevice()) {
-      if (joystickContainer) {
-        joystickContainer.style.display = "block";
-      }
-      if (crosshair) {
-        crosshair.style.display = "block";
-      }
+      showMobileControlls();
     }
+  }
+}
+
+function hideMobileControlls() {
+  mobileOverlay.style.display = "flex";
+
+  if (joystickContainer) {
+    joystickContainer.style.display = "none";
+  }
+  if (crosshair) {
+    crosshair.style.display = "none";
+  }
+}
+
+function showMobileControlls() {
+  if (joystickContainer) {
+    joystickContainer.style.display = "block";
+  }
+  if (crosshair) {
+    crosshair.style.display = "block";
   }
 }
 
@@ -96,6 +104,10 @@ function restartGame() {
     audio.currentTime = 0;
   });
 
+  createNewWorld();
+}
+
+function createNewWorld() {
   const oldCanvas = document.getElementById("canvas");
   const newCanvas = oldCanvas.cloneNode(true);
   oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
