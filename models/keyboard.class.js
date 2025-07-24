@@ -5,8 +5,4 @@ class Keyboard {
     DOWN = false;
     SPACE = false;
     CLICK = false;
-
-     constructor() {
-
-     }
 }

@@ -158,6 +158,7 @@ class World {
 
   handleCharacterCollision() {
     if (!this.character.collisionCooldown) {
+      if (this.isEndbossDead) return;
       this.character.collisionCooldown = true;
 
       this.character.characterGetsHit();
@@ -421,7 +422,7 @@ class World {
       if (this.chickenScore >= 10 && !this.endboss.isMoving) {
         this.endAudio(this.backgroundMusic);
         this.playAudio(this.bossRoar);
-        this.startBossMusic();
+        if (!this.isMuted) this.startBossMusic();
         this.endboss.startMoving();
       }
     }, 500);
@@ -566,8 +567,16 @@ class World {
       }
     });
 
-    if (this.backgroundMusic) {
-      this.backgroundMusic.play();
+    if (this.isEndbossDead) {
+      return;
+    } else if (this.endboss?.isMoving) {
+      if (this.bossMusic && this.bossMusic.paused) {
+        this.bossMusic.play();
+      }
+    } else {
+      if (this.backgroundMusic && this.backgroundMusic.paused) {
+        this.backgroundMusic.play();
+      }
     }
   }
 

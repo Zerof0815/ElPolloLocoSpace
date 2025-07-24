@@ -53,7 +53,7 @@ class Character extends MovableObject {
 
       if (
         this.world.keyboard.RIGHT &&
-        this.x + this.width < this.world.canvas.width / 1.75
+        this.x + this.width < this.world.canvas.width
       ) {
         this.x += this.speed;
       }
@@ -120,7 +120,7 @@ class Character extends MovableObject {
 
   characterGetsHit() {
     this.damageSound();
-    if (this.characterLifes <= 1) return;
+    if (this.characterLifes <= 1 || this.world.gameWon) return;
 
     let frameIndex = 0;
     const totalFrames = PEPE_ANIMATION.HURT.length * 3;
