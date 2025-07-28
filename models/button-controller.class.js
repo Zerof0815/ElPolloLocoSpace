@@ -31,7 +31,7 @@ class ButtonController {
     };
 
     this.canvas.addEventListener("click", handleClick);
-    this.canvas.addEventListener("touchstart", handleClick);
+    this.canvas.addEventListener("touchend", handleClick);
   }
 
   /**
