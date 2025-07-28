@@ -38,6 +38,13 @@ class Endboss extends MovableObject {
     this.loadImagesIntoCache(ENDBOSS.ATTACK);
   }
 
+  /**
+   * Starts an animation cycling through the given array of images.
+   * @param {string[]} imageArray - Array of image keys to animate.
+   * @param {number} intervalTime - Time in milliseconds between frames.
+   * @param {boolean} [loop=true] - Whether the animation should loop.
+   * @param {Function|null} [onComplete=null] - Callback function to call when animation finishes if not looping.
+   */
   startAnimation(imageArray, intervalTime, loop = true, onComplete = null) {
     this.currentImage = 0;
     clearInterval(this.animationInterval);
@@ -53,6 +60,12 @@ class Endboss extends MovableObject {
     }, intervalTime);
   }
 
+  /**
+   * Handles the end of an animation sequence.
+   * Resets or clears the animation interval based on looping.
+   * @param {boolean} loop - Whether the animation should loop.
+   * @param {Function|null} onComplete - Callback to call if animation ends.
+   */
   handleAnimationEnd(loop, onComplete) {
     if (loop) {
       this.currentImage = 0;
@@ -62,6 +75,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Starts the attack behavior including attack animation and spawning spit chickens.
+   */
   startAttack() {
     this.isAttackAble = true;
     this.startAnimation(ENDBOSS.ATTACK, 200, true, null);
@@ -77,6 +93,10 @@ class Endboss extends MovableObject {
     }, 1000 / 30);
   }
 
+  /**
+   * Moves the endboss horizontally towards a target x-coordinate.
+   * @param {number} targetX - The x-coordinate to move towards.
+   */
   moveToTargetX(targetX) {
     this.movementInterval = setInterval(() => {
       if (this.x > targetX) {
@@ -91,6 +111,9 @@ class Endboss extends MovableObject {
     }, 1000 / 30);
   }
 
+  /**
+   * Delays for a short time, then starts the alert animation followed by an attack.
+   */
   fightAnimationTimeout() {
     setTimeout(() => {
       this.startAnimation(ENDBOSS.ALERT, 150, false, () => {
@@ -99,12 +122,18 @@ class Endboss extends MovableObject {
     }, 3000);
   }
 
+  /**
+   * Starts the movement towards the fight position and walking animation.
+   */
   startMoving() {
     this.isMoving = true;
     this.moveToTargetX(460);
     this.startAnimation(ENDBOSS.WALK, 200, true);
   }
 
+  /**
+   * Initiates the death sequence including death movement and explosion effects.
+   */
   deathAnimation() {
     if (this.isDead) return;
     this.isDead = true;
@@ -115,6 +144,9 @@ class Endboss extends MovableObject {
     this.startExplosionLoop();
   }
 
+  /**
+   * Starts a repeated explosion effect with sound for the death animation.
+   */
   startExplosionLoop() {
     this.explosionInterval = setInterval(() => {
       this.explosionSound();
@@ -126,6 +158,9 @@ class Endboss extends MovableObject {
     }, 15000);
   }
 
+  /**
+   * Spawns a single explosion at a random position within the endboss's hitbox.
+   */
   spawnExplosion() {
     const hitboxWidth = this.setHitboxWidth();
     const hitboxHeight = this.setHitboxHeight();
@@ -141,6 +176,10 @@ class Endboss extends MovableObject {
     this.removeExplosions(explosion);
   }
 
+  /**
+   * Calculates the effective hitbox width excluding collision offsets.
+   * @returns {number} Hitbox width.
+   */
   setHitboxWidth() {
     return (
       this.width -
@@ -149,6 +188,10 @@ class Endboss extends MovableObject {
     );
   }
 
+  /**
+   * Calculates the effective hitbox height excluding collision offsets.
+   * @returns {number} Hitbox height.
+   */
   setHitboxHeight() {
     return (
       this.height -
@@ -157,6 +200,10 @@ class Endboss extends MovableObject {
     );
   }
 
+  /**
+   * Removes a given explosion from the explosions array after a delay.
+   * @param {Explosion} explosion - The explosion object to remove.
+   */
   removeExplosions(explosion) {
     setTimeout(() => {
       const index = this.explosions.indexOf(explosion);
@@ -166,22 +213,35 @@ class Endboss extends MovableObject {
     }, 400);
   }
 
+  /**
+   * Starts vertical movement downward as part of the death animation.
+   */
   startDeathMovement() {
     this.deathMoveInterval = setInterval(() => {
       this.y += 1;
     }, 1000 / 30);
   }
 
+  /**
+   * Draws all active explosions on the provided canvas rendering context.
+   * @param {CanvasRenderingContext2D} ctx - The drawing context.
+   */
   drawExplosions(ctx) {
     this.explosions.forEach((explosion) => {
       explosion.draw(ctx);
     });
   }
 
+  /**
+   * Spit chicken enemy.
+   */
   spawnSpitChicken() {
     this.spawnBossChicken();
   }
 
+  /**
+   * Plays the explosion sound effect if sound is not muted.
+   */
   explosionSound() {
     if (this.world.isMuted) return;
     const boom = this.explosionAudio.cloneNode();
@@ -189,11 +249,17 @@ class Endboss extends MovableObject {
     boom.play();
   }
 
+  /**
+   * Plays the shooting sound effect if sound is not muted.
+   */
   shootSound() {
     if (this.world.isMuted) return;
     this.shootAudio.play();
   }
 
+  /**
+   * Spawns multiple spit chickens in a spread pattern from the mouth position.
+   */
   spawnBossChicken() {
     const mouthPos = this.calculateMouthPosition();
     const targetPos = this.getCharacterCenter();
@@ -204,13 +270,21 @@ class Endboss extends MovableObject {
     angles.forEach((angle) => this.spawnAndScheduleChicken(mouthPos, angle));
   }
 
+  /**
+   * Calculates the position of the endboss's mouth for spawning spit chickens.
+   * @returns {{x: number, y: number}} Coordinates of the mouth position.
+   */
   calculateMouthPosition() {
     return {
-      x: (this.x + this.width / 2) - 280,
-      y: (this.y + this.height / 2) - 130,
+      x: this.x + this.width / 2 - 280,
+      y: this.y + this.height / 2 - 130,
     };
   }
 
+  /**
+   * Gets the center position of the player character.
+   * @returns {{x: number, y: number}} Coordinates of the character center.
+   */
   getCharacterCenter() {
     const char = this.world.character;
     return {
@@ -219,17 +293,33 @@ class Endboss extends MovableObject {
     };
   }
 
+  /**
+   * Calculates the angle in radians from one point to another.
+   * @param {{x: number, y: number}} from - Starting position.
+   * @param {{x: number, y: number}} to - Target position.
+   * @returns {number} Angle in radians.
+   */
   calculateAngle(from, to) {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     return Math.atan2(dy, dx);
   }
 
+  /**
+   * Calculates three angles for spit chicken spread attack based on a base angle.
+   * @param {number} baseAngle - The central angle in radians.
+   * @returns {number[]} Array of angles for spread.
+   */
   calculateSpreadAngles(baseAngle) {
     const spread = Math.PI / 12;
     return [baseAngle, baseAngle - spread, baseAngle + spread];
   }
 
+  /**
+   * Spawns a spit chicken at a position with a given angle and schedules its removal.
+   * @param {{x: number, y: number}} position - Spawn coordinates.
+   * @param {number} angle - Angle to shoot the chicken.
+   */
   spawnAndScheduleChicken(position, angle) {
     const chicken = new SpitChicken(position.x, position.y, angle);
     this.world.enemies.push(chicken);

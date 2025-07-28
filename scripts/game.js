@@ -7,6 +7,10 @@ const joystickContainer = document.getElementById("joystick");
 const mobileOverlay = document.getElementById("mobile-overlay");
 let keyboard = new Keyboard();
 
+/**
+ * Checks if the current device supports touch events.
+ * @returns {boolean} True if the device supports touch, otherwise false.
+ */
 function isTouchDevice() {
   return (
     "ontouchstart" in window ||
@@ -15,6 +19,9 @@ function isTouchDevice() {
   );
 }
 
+/**
+ * Initializes the game by setting up the canvas, world, mobile orientation, and controls.
+ */
 function init() {
     canvas = document.getElementById("canvas");
     world = new World(canvas, keyboard);
@@ -22,6 +29,9 @@ function init() {
     initMobileControls();
 }
 
+/**
+ * Initializes mobile controls if the device supports touch input.
+ */
 function initMobileControls() {
   if (isTouchDevice()) {
     joystick = new Joystick("joystick", "stick", keyboard);
@@ -29,6 +39,9 @@ function initMobileControls() {
   };
 }
 
+/**
+ * Updates the visibility of mobile overlay and controls based on device orientation.
+ */
 function updateMobileOverlayAndControls() {
   if (isDeviceVertical) {
     hideMobileControlls();
@@ -44,6 +57,9 @@ function updateMobileOverlayAndControls() {
   joystickContainer.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
+/**
+ * Hides mobile control elements like the joystick and crosshair, and shows the overlay.
+ */
 function hideMobileControlls() {
   mobileOverlay.style.display = "flex";
 
@@ -55,6 +71,9 @@ function hideMobileControlls() {
   }
 }
 
+/**
+ * Shows mobile control elements like the joystick and crosshair.
+ */
 function showMobileControlls() {
   if (joystickContainer) {
     joystickContainer.style.display = "block";
@@ -64,6 +83,9 @@ function showMobileControlls() {
   }
 }
 
+/**
+ * Periodically checks the device orientation and updates overlay and controls accordingly.
+ */
 function checkMobileOrientation() {
   setInterval(() => {
     if (screen.width <= screen.height && isTouchDevice()) {
@@ -77,6 +99,9 @@ function checkMobileOrientation() {
   }, 500);
 }
 
+/**
+ * Sets up event listeners for mobile controls related to the crosshair element.
+ */
 function handleMobileControlls() {
   crosshair.addEventListener("touchstart", () => {
     keyboard.SPACE = true;
@@ -95,6 +120,9 @@ function handleMobileControlls() {
   });
 }
 
+/**
+ * Restarts the game by clearing all timers, stopping audio, and creating a new game world.
+ */
 function restartGame() {
   for (let i = 1; i < 9999; i++) {
     clearInterval(i);
@@ -110,6 +138,9 @@ function restartGame() {
   createNewWorld();
 }
 
+/**
+ * Ends the game by clearing timers and stopping all music.
+ */
 function endGame() {
   for (let i = 1; i < 9999; i++) {
     clearInterval(i);
@@ -123,6 +154,9 @@ function endGame() {
   world.bossMusic.currentTime = 0;
 }
 
+/**
+ * Creates a new game world by replacing the old canvas with a new one.
+ */
 function createNewWorld() {
   const oldCanvas = document.getElementById("canvas");
   const newCanvas = oldCanvas.cloneNode(true);

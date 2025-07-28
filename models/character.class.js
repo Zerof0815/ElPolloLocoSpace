@@ -32,6 +32,10 @@ class Character extends MovableObject {
     this.damageAudio = new Audio("assets/audio/bottleBreak.mp3");
   }
 
+  /**
+   * Starts the main movement loop that updates vertical and horizontal position,
+   * and smooths the character's angle.
+   */
   moveCharacter() {
     setInterval(() => {
       if (this.isDead) return;
@@ -44,6 +48,9 @@ class Character extends MovableObject {
     }, 1000 / 30);
   }
 
+  /**
+   * Handles vertical movement based on keyboard input and updates target angle.
+   */
   yMovement() {
     if (this.world.keyboard.UP && this.y > 0) {
       this.y -= this.speed;
@@ -59,6 +66,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Handles horizontal movement based on keyboard input.
+   */
   xMovement() {
     if (
       this.world.keyboard.RIGHT &&
@@ -71,6 +81,11 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Handles collision logic, reducing health and triggering damage animations.
+   * @param {Object} world - The current game world context.
+   * @returns {boolean} Whether a collision was processed.
+   */
   handleCollision(world) {
     if (this.collisionCooldown || world.isEndbossDead) {
       return false;
@@ -88,11 +103,19 @@ class Character extends MovableObject {
     return true;
   }
 
+  /**
+   * Updates the health bar percentage according to remaining lives.
+   * @param {Object} world - The current game world context.
+   */
   updateHealthBar(world) {
     const percentLife = (this.characterLifes / this.maxLifes) * 100;
     world.healthBar.setPercentage(percentLife);
   }
 
+  /**
+   * Checks if the character is dead, and if so, plays death sounds and animation.
+   * @param {Object} world - The current game world context.
+   */
   checkDeath(world) {
     if (this.characterLifes <= 0 && !this.isDead) {
       world.endAudio(world.backgroundMusic);
@@ -103,12 +126,18 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Resets the collision cooldown after 1 second.
+   */
   resetCollisionCooldown() {
     setTimeout(() => {
       this.collisionCooldown = false;
     }, 1000);
   }
 
+  /**
+   * Starts an interval that checks for shooting input and creates bottles if allowed.
+   */
   shoot() {
     setInterval(() => {
       if (this.isDead) return;
@@ -127,12 +156,20 @@ class Character extends MovableObject {
     }, 1000 / 30);
   }
 
+  /**
+   * Creates and returns a new Bottle object at the character's shooting position.
+   * @returns {Bottle} The newly created bottle object.
+   */
   createBottle() {
     const bottle = new Bottle(this.x + this.width, this.y + this.height / 2);
     this.world.bottles.push(bottle);
     return bottle;
   }
 
+  /**
+   * Removes a bottle object from the world after a timeout.
+   * @param {Bottle} bottle - The bottle to remove.
+   */
   deleteBottle(bottle) {
     setTimeout(() => {
       const index = world.bottles.indexOf(bottle);
@@ -142,6 +179,9 @@ class Character extends MovableObject {
     }, 1800);
   }
 
+  /**
+   * Triggers the death animation and final image of the character.
+   */
   triggerDeath() {
     this.isDead = true;
 
@@ -154,6 +194,9 @@ class Character extends MovableObject {
     }, 2000);
   }
 
+  /**
+   * Animates the character falling off-screen after death with gravity and rotation.
+   */
   animateDeathFall() {
     let velocityY = -5;
     let gravity = 0.2;
@@ -169,6 +212,9 @@ class Character extends MovableObject {
     }, 1000 / 30);
   }
 
+  /**
+   * Plays damage sound and triggers the hurt animation unless nearly dead or game is won.
+   */
   characterGetsHit() {
     this.damageSound();
     if (this.characterLifes <= 1 || this.world.gameWon) return;
@@ -179,6 +225,11 @@ class Character extends MovableObject {
     this.characterDamageAnimation(frameIndex, totalFrames);
   }
 
+  /**
+   * Animates the character's hurt state using the hurt image sequence.
+   * @param {number} frameIndex - Starting frame index.
+   * @param {number} totalFrames - Total number of animation frames to play.
+   */
   characterDamageAnimation(frameIndex, totalFrames) {
     const hurtInterval = setInterval(() => {
       let currentFrame = frameIndex % PEPE_ANIMATION.HURT.length;
@@ -194,6 +245,9 @@ class Character extends MovableObject {
     }, 100);
   }
 
+  /**
+   * Plays the shooting sound effect if sound is not muted.
+   */
   shootSound() {
     if (this.world.isMuted) return;
     const bottleShoot = this.shootingAudio.cloneNode();
@@ -201,29 +255,13 @@ class Character extends MovableObject {
     bottleShoot.play();
   }
 
-  async damageSound() {
+  /**
+   * Plays the damage sound effect if sound is not muted,
+   */
+  damageSound() {
     if (this.world.isMuted) return;
-    await this.waitForUserInteraction();
     const gettingHit = this.damageAudio.cloneNode();
     gettingHit.volume = 0.2;
     gettingHit.play();
-  }
-
-  waitForUserInteraction() {
-    return new Promise((resolve) => {
-      if (this.userHasInteracted) return resolve();
-
-      const handler = () => {
-        this.userHasInteracted = true;
-        document.removeEventListener("keydown", handler);
-        document.removeEventListener("click", handler);
-        document.removeEventListener("touchstart", handler);
-        resolve();
-      };
-
-      document.addEventListener("keydown", handler);
-      document.addEventListener("click", handler);
-      document.addEventListener("touchstart", handler);
-    });
   }
 }

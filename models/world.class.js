@@ -39,7 +39,7 @@ class World {
     this.checkLocalStorageIfMuted();
     this.endboss.world = this;
     this.draw();
-    this.setWorld();
+    this.character.world = this;
     this.character.shoot();
     this.spawnManager = new SpawnManager();
     this.startSpawning();
@@ -52,10 +52,6 @@ class World {
       [this.homeButton, this.restartButton, this.soundButton],
       this
     );
-  }
-
-  setWorld() {
-    this.character.world = this;
   }
 
   draw() {
@@ -302,16 +298,6 @@ class World {
     this.spawnManager.spawnChicken(this);
     this.spawnManager.spawnRock(this);
     this.spawnManager.spawnPlanet(this);
-  }
-
-  spawnBossChicken(bossX, bossY) {
-    const mouthPos = this.calculateMouthPosition(bossX, bossY);
-    const targetPos = this.getCharacterCenter();
-
-    const baseAngle = this.calculateAngle(mouthPos, targetPos);
-    const angles = this.calculateSpreadAngles(baseAngle);
-
-    angles.forEach((angle) => this.spawnAndScheduleChicken(mouthPos, angle));
   }
 
   checkChickenScoreForEndboss() {

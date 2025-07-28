@@ -14,7 +14,15 @@ class Chicken extends MovableObject {
     bottom: 15,
   };
 
-  constructor(imagePath, height, width, speed, walkingImages, chickenLifes, deadImage) {
+  constructor(
+    imagePath,
+    height,
+    width,
+    speed,
+    walkingImages,
+    chickenLifes,
+    deadImage
+  ) {
     super().loadImage(imagePath);
     this.IMAGES_WALKING = walkingImages;
     this.loadImagesIntoCache(this.IMAGES_WALKING);
@@ -27,6 +35,9 @@ class Chicken extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the walking animation by cycling through the walking image frames at regular intervals.
+   */
   animate() {
     this.animationInterval = setInterval(() => {
       let frameIndex = this.currentImage % this.IMAGES_WALKING.length;
@@ -36,11 +47,14 @@ class Chicken extends MovableObject {
     }, 100);
   }
 
+  /**
+   * Stops the animation and displays the static dead image. Also stops movement.
+   */
   deathAnimation() {
     clearInterval(this.animationInterval);
     const deadSprite = new Image();
     deadSprite.src = this.deadImage;
     this.img = deadSprite;
-    this.speed = 0;  
+    this.speed = 0;
   }
 }

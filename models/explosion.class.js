@@ -11,6 +11,10 @@ class Explosion extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the explosion animation by cycling through the explosion frames.
+   * Automatically stops when the last frame is reached.
+   */
   animate() {
     this.animationInterval = setInterval(() => {
       this.img = this.imageCache[EXPLOSION[this.currentFrame]];
@@ -21,6 +25,10 @@ class Explosion extends MovableObject {
     }, 50);
   }
 
+  /**
+   * Draws the current explosion frame onto the canvas.
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
+   */
   draw(ctx) {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }

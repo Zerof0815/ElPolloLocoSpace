@@ -16,6 +16,10 @@ class StatusBar extends DrawableObject {
     this.setPercentage(100);
   }
 
+  /**
+   * Updates the health percentage and changes the displayed health bar image accordingly.
+   * @param {number} percentage - The current health percentage (0 to 100).
+   */
   setPercentage(percentage) {
     this.percentage = percentage;
     let index = Math.floor(this.percentage / 20);

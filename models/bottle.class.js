@@ -25,6 +25,10 @@ class Bottle extends MovableObject {
     this.bottleAudio = new Audio("assets/audio/bottleBreak.mp3");
   }
 
+  /**
+   * Starts the bottle's rotation animation using the ROTATE image sequence.
+   * Continues until the bottle starts breaking.
+   */
   animate() {
     setInterval(() => {
       if (this.isBreaking) return;
@@ -35,6 +39,10 @@ class Bottle extends MovableObject {
     }, 100);
   }
 
+  /**
+   * Initiates the bottle breaking animation and sets its state to breaking.
+   * @param {Function} removeCallback - Callback to remove the bottle after animation completes.
+   */
   breakAnimation(removeCallback) {
     this.isBreaking = true;
 
@@ -44,6 +52,12 @@ class Bottle extends MovableObject {
     this.breakAnimationInterval(frameIndex, totalFrames, removeCallback);
   }
 
+  /**
+   * Handles the animation frames for the bottle breaking sequence.
+   * @param {number} frameIndex - Index of the current animation frame.
+   * @param {number} totalFrames - Total number of frames in the breaking animation.
+   * @param {Function} removeCallback - Callback to remove the bottle after animation ends.
+   */
   breakAnimationInterval(frameIndex, totalFrames, removeCallback) {
     const breakInterval = setInterval(() => {
       let currentFrame = frameIndex % BOTTLE_ANIMATION.BREAK.length;
@@ -59,6 +73,9 @@ class Bottle extends MovableObject {
     }, 50);
   }
 
+  /**
+   * Plays the sound effect for the bottle breaking.
+   */
   breakSound() {
     const bottleBreakSound = this.bottleAudio.cloneNode();
     bottleBreakSound.volume = 0.2;
