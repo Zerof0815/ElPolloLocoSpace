@@ -4,6 +4,7 @@ class World {
   background = level1.background;
   enemies = [];
   asteroids = [];
+  planets = [];
   endboss = new Endboss(ENDBOSS.WALK[0], 500, 582, 3, ENDBOSS.WALK);
   healthBar = new StatusBar(10, -10, 158 / 2.5, 595 / 2.5, STATUS_BAR.HEALTH);
   bossHealthBar = new StatusBar(
@@ -20,26 +21,11 @@ class World {
     canvas.height,
     END_SCREEN.GAME_OVER
   );
-  homeButton = new GameButton(310, 15, GAME_BUTTONS.HOME, () => {
-    window.location.href = "index.html";
-  });
-  restartButton = new GameButton(390, 15, GAME_BUTTONS.RESTART, () => {
-    this.endAudio(this.backgroundMusic);
-    restartGame();
-  });
-  soundButton = new GameButton(470, 15, GAME_BUTTONS.SOUND, () => {
-    this.isMuted = !this.isMuted;
-    localStorage.setItem("isMuted", this.isMuted ? "true" : "false");
-
-    this.isGameMuted();
-  });
+  homeButton = GameButton.createHomeButton();
+  restartButton = GameButton.createRestartButton(this);
+  soundButton = GameButton.createSoundButton(this);
   bottles = [];
   chickenScore = 0;
-  backgroundMusic;
-  bossRoar;
-  bossMusic;
-  looseSound;
-  winSound;
   ctx;
   keyboard;
   isPlayerDead = false;
@@ -55,21 +41,11 @@ class World {
     this.draw();
     this.setWorld();
     this.character.shoot();
-    this.spawnChicken(this);
-    this.spawnAsteroids(this);
+    this.spawnManager = new SpawnManager();
+    this.startSpawning();
     this.checkCollisions();
     this.checkChickenScoreForEndboss();
-    this.backgroundMusic = new Audio("assets/audio/backgroundAudio.mp3");
-    this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.1;
-    this.bossRoar = new Audio("assets/audio/bossRoar.mp3");
-    this.bossRoar.volume = 0.1;
-    this.bossMusic = new Audio("assets/audio/bossFight.mp3");
-    this.bossMusic.loop = true;
-    this.bossMusic.volume = 0.1;
-    this.looseSound = new Audio("assets/audio/loose.mp3");
-    this.winSound = new Audio("assets/audio/winning.mp3");
-    this.winSound.volume = 0.1;
+    this.loadAudio();
     if (!this.isMuted) this.startBackgroundMusic();
     this.buttonMouseHover(this.canvas);
     this.buttonClick(this.canvas);
@@ -94,6 +70,20 @@ class World {
     });
   }
 
+  loadAudio() {
+    this.backgroundMusic = new Audio("assets/audio/backgroundAudio.mp3");
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.1;
+    this.bossRoar = new Audio("assets/audio/bossRoar.mp3");
+    this.bossRoar.volume = 0.1;
+    this.bossMusic = new Audio("assets/audio/bossFight.mp3");
+    this.bossMusic.loop = true;
+    this.bossMusic.volume = 0.1;
+    this.looseSound = new Audio("assets/audio/loose.mp3");
+    this.winSound = new Audio("assets/audio/winning.mp3");
+    this.winSound.volume = 0.1;
+  }
+
   drawbuttons() {
     this.addToMap(this.homeButton);
     this.addToMap(this.restartButton);
@@ -101,6 +91,7 @@ class World {
   }
 
   drawCollideables() {
+    this.fromArrayAddToMap(this.planets);
     this.fromArrayAddToMap(this.enemies);
     this.addToMap(this.character);
     this.addToMap(this.endboss);
@@ -113,8 +104,7 @@ class World {
     if (this.endboss.isMoving) this.addToMap(this.bossHealthBar);
     this.chickenCounter.drawIcon(this.ctx);
     if (this.isEndbossDead) this.addToMap(this.winnerScreen);
-    if (this.character.characterLifes <= 0)
-      this.addToMap(this.looserScreen);
+    if (this.character.characterLifes <= 0) this.addToMap(this.looserScreen);
   }
 
   addToMap(movableObject) {
@@ -345,89 +335,10 @@ class World {
     }
   }
 
-  spawnChicken(world) {
-    if (this.chickenScore <= 9) {
-      const isSmall = Math.random() < 0.5;
-      const y = Math.floor(Math.random() * (world.canvas.height - 125) + 50);
-
-      const newChicken = this.createChicken(isSmall);
-      newChicken.y = y;
-      world.enemies.push(newChicken);
-
-      this.deleteObjectAfterTimeout(newChicken, world.enemies, 15000);
-
-      setTimeout(() => this.spawnChicken(world), 3000);
-    }
-  }
-
-  createChicken(isSmall) {
-    if (isSmall) {
-      return new Chicken(
-        CHICKEN_IMAGES.SMALL[0],
-        50,
-        50,
-        4,
-        CHICKEN_IMAGES.SMALL,
-        1,
-        CHICKEN_IMAGES.SMALL_DEAD
-      );
-    } else {
-      return new Chicken(
-        CHICKEN_IMAGES.NORMAL[0],
-        75,
-        75,
-        3,
-        CHICKEN_IMAGES.NORMAL,
-        2,
-        CHICKEN_IMAGES.NORMAL_DEAD
-      );
-    }
-  }
-
-  spawnRock(world) {
-    const rock = new Asteroid(
-      ASTEROIDS.ROCK,
-      Math.floor(Math.random() * 400) + 800,
-      Math.floor(Math.random() * 380),
-      50,
-      50,
-      1.5
-    );
-    world.asteroids.push(rock);
-
-    this.deleteObjectAfterTimeout(rock, world.asteroids, 30000);
-
-    setTimeout(() => this.spawnRock(world), 5000);
-  }
-
-  spawnPlanet(world) {
-    const planet = new Asteroid(
-      ASTEROIDS.PLANET,
-      800,
-      Math.floor(Math.random() * 380),
-      100,
-      100,
-      0.3
-    );
-    world.background.push(planet);
-
-    this.deleteObjectAfterTimeout(planet, world.background, 180000);
-
-    setTimeout(() => this.spawnPlanet(world), 60000);
-  }
-
-  deleteObjectAfterTimeout(object, collection, timeout) {
-    setTimeout(() => {
-      const index = collection.indexOf(object);
-      if (index > -1) {
-        collection.splice(index, 1);
-      }
-    }, timeout);
-  }
-
-  spawnAsteroids(world) {
-    this.spawnRock(world);
-    this.spawnPlanet(world);
+  startSpawning() {
+    this.spawnManager.spawnChicken(this);
+    this.spawnManager.spawnRock(this);
+    this.spawnManager.spawnPlanet(this);
   }
 
   spawnBossChicken(bossX, bossY) {

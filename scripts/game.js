@@ -26,7 +26,7 @@ function initMobileControls() {
   if (isTouchDevice()) {
     joystick = new Joystick("joystick", "stick", keyboard);
     handleMobileControlls();
-  }
+  };
 }
 
 function updateMobileOverlayAndControls() {
@@ -38,7 +38,10 @@ function updateMobileOverlayAndControls() {
     if (isTouchDevice()) {
       showMobileControlls();
     }
-  }
+  };
+
+  crosshair.addEventListener("contextmenu", (e) => e.preventDefault());
+  joystickContainer.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
 function hideMobileControlls() {
@@ -99,12 +102,25 @@ function restartGame() {
     cancelAnimationFrame(i);
   }
 
-  document.querySelectorAll("audio").forEach((audio) => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
+  world.backgroundMusic.pause();
+  world.backgroundMusic.currentTime = 0;
+  world.bossMusic.pause();
+  world.bossMusic.currentTime = 0;
 
   createNewWorld();
+}
+
+function endGame() {
+  for (let i = 1; i < 9999; i++) {
+    clearInterval(i);
+    clearTimeout(i);
+    cancelAnimationFrame(i);
+  }
+
+  world.backgroundMusic.pause();
+  world.backgroundMusic.currentTime = 0;
+  world.bossMusic.pause();
+  world.bossMusic.currentTime = 0;
 }
 
 function createNewWorld() {

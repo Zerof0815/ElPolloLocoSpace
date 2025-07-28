@@ -1,8 +1,6 @@
-const mobileOverlay = document.getElementById("mobile-overlay");
 const impressum = document.getElementById("impressum");
 const startScreen = document.getElementById("start-screen");
 const howToScreen = document.getElementById("how-to-window");
-let isDeviceVertical;
 
 function howToPlayButton() {
   startScreen.style.display = "none";
@@ -14,8 +12,14 @@ function backToMainMenu() {
   howToScreen.style.display = "none";
 }
 
-function init() {
+function initMenu() {
   checkMobileOrientation();
+}
+
+function startGame() {
+  startScreen.style.display = "none";
+  document.getElementById("game-screen").style.display = "flex";
+  init();
 }
 
 function isTouchDevice() {

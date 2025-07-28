@@ -100,6 +100,13 @@ h1 {
     flex-direction: column;
 }
 
+.game-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
 .start-screen h1 {
     text-shadow: none;
 }
@@ -133,7 +140,7 @@ a:hover {
     transform: scale(1.05);
 }
 
-.how-to-button {
+.start-screen-button {
     color: rgb(43, 43, 84);
     background-color: white;
     padding-left: 10px;
@@ -150,7 +157,7 @@ a:hover {
     transform-origin: center center;
 }
 
-.how-to-button:hover {
+.start-screen-button:hover {
     transform: scale(1.05);
 }
 
