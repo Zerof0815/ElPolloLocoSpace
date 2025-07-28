@@ -54,6 +54,11 @@ class World {
     );
   }
 
+  /**
+   * Clears the canvas and redraws the entire game scene, including
+   * background, UI, characters, enemies, and buttons.
+   * Continuously calls itself using requestAnimationFrame for smooth animation.
+   */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fromArrayAddToMap(this.background);
@@ -69,6 +74,10 @@ class World {
     });
   }
 
+  /**
+   * Loads and configures all audio elements used in the game, including
+   * background music, boss music, and sound effects.
+   */
   loadAudio() {
     this.backgroundMusic = new Audio("assets/audio/backgroundAudio.mp3");
     this.backgroundMusic.loop = true;
@@ -83,12 +92,19 @@ class World {
     this.winSound.volume = 0.1;
   }
 
+  /**
+   * Draws the home, restart, and sound buttons on the canvas.
+   */
   drawbuttons() {
     this.addToMap(this.homeButton);
     this.addToMap(this.restartButton);
     this.addToMap(this.soundButton);
   }
 
+  /**
+   * Draws all objects that can collide, including planets, enemies,
+   * character, endboss, asteroids, and bottles.
+   */
   drawCollideables() {
     this.fromArrayAddToMap(this.planets);
     this.fromArrayAddToMap(this.enemies);
@@ -98,6 +114,10 @@ class World {
     this.fromArrayAddToMap(this.bottles);
   }
 
+  /**
+   * Draws the game UI elements such as health bars, chicken counter, winner screen, and
+   * loser screen based on game state.
+   */
   drawUI() {
     this.addToMap(this.healthBar);
     if (this.endboss.isMoving) this.addToMap(this.bossHealthBar);
@@ -106,6 +126,12 @@ class World {
     if (this.character.characterLifes <= 0) this.addToMap(this.looserScreen);
   }
 
+  /**
+   * Adds a movable object to the canvas, applying translation and
+   * rotation based on the object's position and angle.
+   * @param {Object} movableObject - The object to be drawn, expected to have
+   * x, y, width, height, and optionally angle properties.
+   */
   addToMap(movableObject) {
     this.ctx.save();
 
@@ -120,6 +146,11 @@ class World {
     this.ctx.restore();
   }
 
+  /**
+   * Returns the parameters needed for ctx.drawImage to draw the movable object centered at (0,0).
+   * @param {Object} movableObject - The object to get image data from.
+   * @returns {Array} Array containing image, x-offset, y-offset, width, and height for drawing.
+   */
   movableObjectData(movableObject) {
     return [
       movableObject.img,
@@ -130,6 +161,11 @@ class World {
     ];
   }
 
+  /**
+   * Iterates over an array of movable objects, calls their update method if it exists,
+   * and draws each on the canvas.
+   * @param {Array<Object>} movableObjectInArray - Array of movable objects to update and draw.
+   */
   fromArrayAddToMap(movableObjectInArray) {
     movableObjectInArray.forEach((object) => {
       if (object.update) {
@@ -139,6 +175,11 @@ class World {
     });
   }
 
+  /**
+   * Filters an array of objects to check for collisions with the character and updates enemy states accordingly.
+   * @param {Array<Object>} objectArray - Array of objects to check collisions against the character.
+   * @returns {Array<Object>} Filtered array of objects after handling collisions and deaths.
+   */
   checkObjectCollisions(objectArray) {
     return objectArray.filter((object) => {
       if (object.isDead) return true;
@@ -151,6 +192,11 @@ class World {
     });
   }
 
+  /**
+   * Sets up repeated collision checks between the character and enemies, asteroids,
+   * and bottles at 30 times per second.
+   * Updates arrays based on collisions and character state.
+   */
   checkCollisions() {
     setInterval(() => {
       if (this.character.isDead) return;
@@ -168,11 +214,20 @@ class World {
     }, 1000 / 30);
   }
 
+  /**
+   * Handles the event when a bottle hits a chicken by processing the chicken hit and breaking the bottle.
+   * @param {Object} bottle - The bottle object involved in the collision.
+   * @param {Object} enemy - The chicken enemy object involved in the collision.
+   */
   handleBottleChickenHit(bottle, enemy) {
     this.handleChickenHit(enemy);
     this.handleBottleBreak(bottle);
   }
 
+  /**
+   * Marks an enemy chicken as dead, triggers its death animation, updates the chicken score, and schedules its removal.
+   * @param {Object} enemy - The chicken enemy to be marked dead.
+   */
   handleChickenHit(enemy) {
     if (enemy.chickenLifes > 0 || enemy.isDead) return;
 
@@ -182,6 +237,9 @@ class World {
     this.removeEnemyAfterDelay(enemy);
   }
 
+  /**
+   * Increments the player's chicken score and updates the chicken counter UI, if the score is 9 or less.
+   */
   updateChickenScore() {
     if (this.chickenScore <= 9) {
       this.chickenScore++;
@@ -189,6 +247,10 @@ class World {
     }
   }
 
+  /**
+   * Removes the given enemy from the enemies array after a 1 second delay.
+   * @param {Object} enemy - The enemy object to remove.
+   */
   removeEnemyAfterDelay(enemy) {
     setTimeout(() => {
       const index = this.enemies.indexOf(enemy);
@@ -198,6 +260,10 @@ class World {
     }, 1000);
   }
 
+  /**
+   * Handles the breaking of a bottle: plays break sound, animates breaking, and removes it from the bottles array.
+   * @param {Object} bottle - The bottle object to break.
+   */
   handleBottleBreak(bottle) {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex < 0) return;
@@ -209,6 +275,11 @@ class World {
     });
   }
 
+  /**
+   * Handles a bottle hitting an asteroid: plays break sound, animates breaking, and removes the bottle.
+   * @param {Object} bottle - The bottle object involved in the collision.
+   * @param {Object} asteroid - The asteroid object involved in the collision.
+   */
   handleBottleAsteroidHit(bottle, asteroid) {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex > -1) {
@@ -219,11 +290,18 @@ class World {
     }
   }
 
+  /**
+   * Handles a bottle hitting the boss by registering the hit and breaking the bottle.
+   * @param {Object} bottle - The bottle object that hit the boss.
+   */
   handleBottleBossHit(bottle) {
     this.handleBossHit();
     this.handleBossBottleBreak(bottle);
   }
 
+  /**
+   * Processes a hit on the endboss: reduces life, updates health bar, and handles death if life reaches zero.
+   */
   handleBossHit() {
     if (this.endboss.isDead || !this.endboss.isAttackAble) return;
 
@@ -235,12 +313,18 @@ class World {
     }
   }
 
+  /**
+   * Updates the boss health bar UI based on the current percentage of boss life remaining.
+   */
   updateBossHealthBar() {
     const percentLife =
       (this.endboss.endbossLifes / this.endboss.endbossMaxLifes) * 100;
     this.bossHealthBar.setPercentage(percentLife);
   }
 
+  /**
+   * Handles the death of the boss: stops boss music, plays winning sound, triggers death animation, and sets boss as dead.
+   */
   handleBossDeath() {
     this.endAudio(this.bossMusic);
     this.playAudio(this.winSound);
@@ -248,6 +332,10 @@ class World {
     this.isEndbossDead = true;
   }
 
+  /**
+   * Handles breaking of a bottle that hit the boss: animates breaking, plays sound if not muted, and removes bottle from array.
+   * @param {Object} bottle - The bottle object to break.
+   */
   handleBossBottleBreak(bottle) {
     const bottleIndex = this.bottles.indexOf(bottle);
     if (bottleIndex < 0) return;
@@ -258,6 +346,10 @@ class World {
     });
   }
 
+  /**
+   * Checks collisions between all bottles and enemies, asteroids, and the boss.
+   * Calls appropriate handlers when collisions occur.
+   */
   checkBottleHits() {
     this.bottles.forEach((bottle) => {
       this.checkBottleEnemyHits(bottle);
@@ -266,6 +358,10 @@ class World {
     });
   }
 
+  /**
+   * Checks if a given bottle hits any enemies and handles the hit accordingly.
+   * @param {Object} bottle - The bottle to check collisions for.
+   */
   checkBottleEnemyHits(bottle) {
     this.enemies.forEach((enemy) => {
       const validHit =
@@ -280,6 +376,10 @@ class World {
     });
   }
 
+  /**
+   * Checks if a given bottle hits any asteroids and handles the collision.
+   * @param {Object} bottle - The bottle to check collisions for.
+   */
   checkBottleAsteroidHits(bottle) {
     this.asteroids.forEach((asteroid) => {
       if (!bottle.isBreaking && bottle.isColliding(asteroid)) {
@@ -288,18 +388,29 @@ class World {
     });
   }
 
+  /**
+   * Checks if a given bottle hits the boss and handles the collision.
+   * @param {Object} bottle - The bottle to check collisions for.
+   */
   checkBottleBossHit(bottle) {
     if (!bottle.isBreaking && bottle.isColliding(this.endboss)) {
       this.handleBottleBossHit(bottle);
     }
   }
 
+  /**
+   * Starts spawning game entities: chickens, rocks, and planets.
+   */
   startSpawning() {
     this.spawnManager.spawnChicken(this);
     this.spawnManager.spawnRock(this);
     this.spawnManager.spawnPlanet(this);
   }
 
+  /**
+   * Checks periodically if the chicken score is high enough to trigger the boss phase.
+   * Starts boss music and movement when conditions are met.
+   */
   checkChickenScoreForEndboss() {
     setInterval(() => {
       if (this.chickenScore >= 10 && !this.endboss.isMoving) {
@@ -311,30 +422,50 @@ class World {
     }, 500);
   }
 
+  /**
+   * Pauses and resets the background music.
+   */
   stopBackgroundMusic() {
     this.backgroundMusic.pause();
     this.backgroundMusic.currentTime = 0;
   }
 
+  /**
+   * Starts/resumes the background music.
+   */
   startBackgroundMusic() {
     this.backgroundMusic.play();
   }
 
+  /**
+   * Pauses the given audio object.
+   * @param {HTMLAudioElement} sound - The audio element to pause.
+   */
   endAudio(sound) {
     sound.pause();
   }
 
+  /**
+   * Plays the given audio object if the game is not muted.
+   * @param {HTMLAudioElement} sound - The audio element to play.
+   */
   playAudio(sound) {
     if (this.isMuted) return;
     sound.play();
   }
 
+  /**
+   * Starts the boss music after a delay.
+   */
   startBossMusic() {
     setTimeout(() => {
       this.bossMusic.play();
     }, 3000);
   }
 
+  /**
+   * Toggles game mute state and updates the sound button image.
+   */
   isGameMuted() {
     if (this.isMuted) {
       this.muteAllSounds();
@@ -345,6 +476,9 @@ class World {
     }
   }
 
+  /**
+   * Mutes and pauses all major game audio tracks.
+   */
   muteAllSounds() {
     const sounds = [
       this.backgroundMusic,
@@ -362,6 +496,9 @@ class World {
     });
   }
 
+  /**
+   * Unmutes all major game audio tracks and resumes appropriate music based on game state.
+   */
   unmuteAllSounds() {
     const sounds = [
       this.backgroundMusic,
@@ -380,6 +517,12 @@ class World {
     this.musicHandler();
   }
 
+  /**
+   * Determines which music to play based on the current game state:
+   * - If the endboss is active, plays boss music.
+   * - Otherwise, plays background music.
+   * Does not play any music if the endboss is already dead.
+   */
   musicHandler() {
     if (this.isEndbossDead) {
       return;
@@ -394,6 +537,10 @@ class World {
     }
   }
 
+  /**
+   * Loads the mute state from local storage and applies it.
+   * Also updates the sound button image based on mute status.
+   */
   checkLocalStorageIfMuted() {
     const savedMute = localStorage.getItem("isMuted");
     this.isMuted = savedMute === "true";
