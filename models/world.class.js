@@ -47,8 +47,11 @@ class World {
     this.checkChickenScoreForEndboss();
     this.loadAudio();
     if (!this.isMuted) this.startBackgroundMusic();
-    this.buttonMouseHover(this.canvas);
-    this.buttonClick(this.canvas);
+    this.buttonController = new ButtonController(
+      this.canvas,
+      [this.homeButton, this.restartButton, this.soundButton],
+      this
+    );
   }
 
   setWorld() {
@@ -140,54 +143,14 @@ class World {
     });
   }
 
-  handleCharacterCollision() {
-    if (this.character.collisionCooldown || this.isEndbossDead) {
-      return false;
-    }
-
-    this.character.collisionCooldown = true;
-    this.processCharacterHit();
-    this.updateHealthBar();
-    this.checkCharacterDeath();
-    this.resetCollisionCooldown();
-
-    return true;
-  }
-
-  processCharacterHit() {
-    this.character.characterGetsHit();
-    this.character.characterLifes--;
-  }
-
-  updateHealthBar() {
-    const percentLife =
-      (this.character.characterLifes / this.character.maxLifes) * 100;
-    this.healthBar.setPercentage(percentLife);
-  }
-
-  checkCharacterDeath() {
-    if (this.character.characterLifes <= 0 && !this.character.isDead) {
-      this.endAudio(this.backgroundMusic);
-      setTimeout(() => {
-        this.playAudio(this.looseSound);
-      }, 2000);
-      this.character.triggerDeath();
-    }
-  }
-
-  resetCollisionCooldown() {
-    setTimeout(() => {
-      this.character.collisionCooldown = false;
-    }, 1000);
-  }
-
   checkObjectCollisions(objectArray) {
     return objectArray.filter((object) => {
       if (object.isDead) return true;
 
       if (this.character.isColliding(object)) {
-        return !this.handleCharacterCollision();
+        return !this.character.handleCollision(this);
       }
+
       return true;
     });
   }
@@ -351,41 +314,6 @@ class World {
     angles.forEach((angle) => this.spawnAndScheduleChicken(mouthPos, angle));
   }
 
-  calculateMouthPosition(bossX, bossY) {
-    return {
-      x: bossX - 280,
-      y: bossY - 100,
-    };
-  }
-
-  getCharacterCenter() {
-    return {
-      x: this.character.x + this.character.width / 2,
-      y: this.character.y + this.character.height / 2,
-    };
-  }
-
-  calculateAngle(from, to) {
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    return Math.atan2(dy, dx);
-  }
-
-  calculateSpreadAngles(baseAngle) {
-    const spread = Math.PI / 12;
-    return [baseAngle, baseAngle - spread, baseAngle + spread];
-  }
-
-  spawnAndScheduleChicken(position, angle) {
-    const chicken = new SpitChicken(position.x, position.y, angle);
-    this.enemies.push(chicken);
-
-    setTimeout(() => {
-      const index = this.enemies.indexOf(chicken);
-      if (index > -1) this.enemies.splice(index, 1);
-    }, 15000);
-  }
-
   checkChickenScoreForEndboss() {
     setInterval(() => {
       if (this.chickenScore >= 10 && !this.endboss.isMoving) {
@@ -402,44 +330,8 @@ class World {
     this.backgroundMusic.currentTime = 0;
   }
 
-  soundIsReady() {
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject("User did not interact. Sound cannot be played.");
-      }, 1000 * 30);
-
-      this.createUserInteractionHandler(resolve, timeout);
-    });
-  }
-
-  createUserInteractionHandler(resolve, timeout) {
-    const handler = () => {
-      clearTimeout(timeout);
-      this.removeUserInteractionListeners(handler);
-      setTimeout(resolve, 10);
-    };
-    this.addUserInteractionListeners(handler);
-  }
-
-  addUserInteractionListeners(handler) {
-    document.addEventListener("keydown", handler);
-    document.addEventListener("click", handler);
-    document.addEventListener("touchstart", handler);
-  }
-
-  removeUserInteractionListeners(handler) {
-    document.removeEventListener("keydown", handler);
-    document.removeEventListener("click", handler);
-    document.removeEventListener("touchstart", handler);
-  }
-
-  async startBackgroundMusic() {
-    try {
-      await this.soundIsReady();
-      this.backgroundMusic.play();
-    } catch (e) {
-      console.info("Error playing sound");
-    }
+  startBackgroundMusic() {
+    this.backgroundMusic.play();
   }
 
   endAudio(sound) {
@@ -455,54 +347,6 @@ class World {
     setTimeout(() => {
       this.bossMusic.play();
     }, 3000);
-  }
-
-  buttonMouseHover(canvas) {
-    canvas.addEventListener("mousemove", (event) => {
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-
-      const isHovering = [
-        this.homeButton,
-        this.restartButton,
-        this.soundButton,
-      ].some((btn) => btn.isHovered(mouseX, mouseY));
-
-      this.canvas.style.cursor = isHovering ? "pointer" : "default";
-    });
-  }
-
-  buttonClick(canvas) {
-    const handleClick = (event) => {
-      const { x, y } = this.getPointerPosition(event);
-
-      this.homeButton.handleClick(x, y);
-      this.restartButton.handleClick(x, y);
-      this.soundButton.handleClick(x, y);
-    };
-
-    canvas.addEventListener("click", handleClick);
-
-    canvas.addEventListener("touchstart", (event) => {
-      handleClick(event);
-    });
-  }
-
-  getPointerPosition(event) {
-    const rect = this.canvas.getBoundingClientRect();
-    const isTouch = event.touches && event.touches.length > 0;
-
-    const clientX = isTouch ? event.touches[0].clientX : event.clientX;
-    const clientY = isTouch ? event.touches[0].clientY : event.clientY;
-
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
-
-    const x = (clientX - rect.left) * scaleX;
-    const y = (clientY - rect.top) * scaleY;
-
-    return { x, y };
   }
 
   isGameMuted() {

@@ -71,6 +71,44 @@ class Character extends MovableObject {
     }
   }
 
+  handleCollision(world) {
+    if (this.collisionCooldown || world.isEndbossDead) {
+      return false;
+    }
+
+    this.collisionCooldown = true;
+    this.characterGetsHit();
+    this.characterLifes--;
+
+    this.updateHealthBar(world);
+    this.checkDeath(world);
+
+    this.resetCollisionCooldown();
+
+    return true;
+  }
+
+  updateHealthBar(world) {
+    const percentLife = (this.characterLifes / this.maxLifes) * 100;
+    world.healthBar.setPercentage(percentLife);
+  }
+
+  checkDeath(world) {
+    if (this.characterLifes <= 0 && !this.isDead) {
+      world.endAudio(world.backgroundMusic);
+      setTimeout(() => {
+        world.playAudio(world.looseSound);
+      }, 2000);
+      this.triggerDeath();
+    }
+  }
+
+  resetCollisionCooldown() {
+    setTimeout(() => {
+      this.collisionCooldown = false;
+    }, 1000);
+  }
+
   shoot() {
     setInterval(() => {
       if (this.isDead) return;
@@ -90,10 +128,7 @@ class Character extends MovableObject {
   }
 
   createBottle() {
-    const bottle = new Bottle(
-          this.x + this.width,
-          this.y + this.height / 2
-        );
+    const bottle = new Bottle(this.x + this.width, this.y + this.height / 2);
     this.world.bottles.push(bottle);
     return bottle;
   }
@@ -141,7 +176,7 @@ class Character extends MovableObject {
     let frameIndex = 0;
     const totalFrames = PEPE_ANIMATION.HURT.length * 3;
 
-    this.characterDamageAnimation(frameIndex, totalFrames)
+    this.characterDamageAnimation(frameIndex, totalFrames);
   }
 
   characterDamageAnimation(frameIndex, totalFrames) {

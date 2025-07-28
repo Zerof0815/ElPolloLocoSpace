@@ -142,15 +142,19 @@ class Endboss extends MovableObject {
   }
 
   setHitboxWidth() {
-    return this.width -
-    this.objectCollisionOffset.left -
-    this.objectCollisionOffset.right;
+    return (
+      this.width -
+      this.objectCollisionOffset.left -
+      this.objectCollisionOffset.right
+    );
   }
 
   setHitboxHeight() {
-    return this.height -
-    this.objectCollisionOffset.top -
-    this.objectCollisionOffset.bottom;
+    return (
+      this.height -
+      this.objectCollisionOffset.top -
+      this.objectCollisionOffset.bottom
+    );
   }
 
   removeExplosions(explosion) {
@@ -175,12 +179,7 @@ class Endboss extends MovableObject {
   }
 
   spawnSpitChicken() {
-    if (!this.world) return;
-
-    const mouthX = this.x + this.width / 2;
-    const mouthY = this.y + this.height / 2;
-
-    this.world.spawnBossChicken(mouthX, mouthY);
+    this.spawnBossChicken();
   }
 
   explosionSound() {
@@ -193,5 +192,53 @@ class Endboss extends MovableObject {
   shootSound() {
     if (this.world.isMuted) return;
     this.shootAudio.play();
+  }
+
+  spawnBossChicken() {
+    const mouthPos = this.calculateMouthPosition();
+    const targetPos = this.getCharacterCenter();
+
+    const baseAngle = this.calculateAngle(mouthPos, targetPos);
+    const angles = this.calculateSpreadAngles(baseAngle);
+
+    angles.forEach((angle) => this.spawnAndScheduleChicken(mouthPos, angle));
+  }
+
+  calculateMouthPosition() {
+    return {
+      x: (this.x + this.width / 2) - 280,
+      y: (this.y + this.height / 2) - 130,
+    };
+  }
+
+  getCharacterCenter() {
+    const char = this.world.character;
+    return {
+      x: char.x + char.width / 2,
+      y: char.y + char.height / 2,
+    };
+  }
+
+  calculateAngle(from, to) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    return Math.atan2(dy, dx);
+  }
+
+  calculateSpreadAngles(baseAngle) {
+    const spread = Math.PI / 12;
+    return [baseAngle, baseAngle - spread, baseAngle + spread];
+  }
+
+  spawnAndScheduleChicken(position, angle) {
+    const chicken = new SpitChicken(position.x, position.y, angle);
+    this.world.enemies.push(chicken);
+
+    setTimeout(() => {
+      const index = this.world.enemies.indexOf(chicken);
+      if (index > -1) {
+        this.world.enemies.splice(index, 1);
+      }
+    }, 15000);
   }
 }
