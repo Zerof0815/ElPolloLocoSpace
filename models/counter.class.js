@@ -5,6 +5,16 @@ class Counter extends DrawableObject {
   width;
   deadChickens = 0;
 
+  /**
+   * Creates a counter instance to track the number of defeated chickens.
+   *
+   * @constructor
+   * @param {number} x - The X position.
+   * @param {number} y - The Y position.
+   * @param {number} height - The height of the counter.
+   * @param {number} width - The width of the counter.
+   * @param {string} iconPath - The path to the counter icon image.
+   */
   constructor(x, y, height, width, iconPath) {
     super();
     this.loadImage(iconPath);

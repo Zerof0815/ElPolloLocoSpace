@@ -32,6 +32,13 @@ class World {
   isEndbossDead = false;
   isMuted = false;
 
+  /**
+   * Initializes the game world, setting up all objects, characters, audio, and event handlers.
+   *
+   * @constructor
+   * @param {HTMLCanvasElement} canvas - The main canvas element.
+   * @param {Object} keyboard - The keyboard input controller.
+   */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;

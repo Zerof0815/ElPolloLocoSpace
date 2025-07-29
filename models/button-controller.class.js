@@ -1,4 +1,12 @@
 class ButtonController {
+  /**
+   * Creates a new ButtonController instance to manage UI button interactions.
+   *
+   * @constructor
+   * @param {HTMLCanvasElement} canvas - The canvas element associated with the application.
+   * @param {HTMLElement[]} buttons - An array of button elements used for user interaction.
+   * @param {Object} world - The game or application world context the buttons interact with.
+   */
   constructor(canvas, buttons, world) {
     this.canvas = canvas;
     this.buttons = buttons;

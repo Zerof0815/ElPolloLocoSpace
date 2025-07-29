@@ -6,6 +6,15 @@ class GameButton extends DrawableObject {
   muteImg;
   onClick;
 
+  /**
+   * Creates a new interactive game button.
+   *
+   * @constructor
+   * @param {number} x - X position of the button.
+   * @param {number} y - Y position of the button.
+   * @param {string} img - Image path for the button.
+   * @param {Function} onClick - Callback function to execute when the button is clicked.
+   */
   constructor(x, y, img, onClick) {
     super();
     this.loadImage(img);

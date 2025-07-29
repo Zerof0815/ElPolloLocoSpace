@@ -6,6 +6,16 @@ class StatusBar extends DrawableObject {
   percentage = 100;
   healthBarImg;
 
+  /**
+   * Creates a status bar (e.g., health, boss health).
+   *
+   * @constructor
+   * @param {number} x - X position of the status bar.
+   * @param {number} y - Y position of the status bar.
+   * @param {number} height - Height of the status bar.
+   * @param {number} width - Width of the status bar.
+   * @param {string[]} healthBarImg - Array of image paths for status levels.
+   */
   constructor(x, y, height, width, healthBarImg) {
     super().loadImagesIntoCache(healthBarImg);
     this.healthBarImg = healthBarImg;

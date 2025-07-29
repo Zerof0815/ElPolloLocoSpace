@@ -24,6 +24,11 @@ class Character extends MovableObject {
   damageAudio;
   userHasInteracted = false;
 
+  /**
+   * Creates a new Character instance and initializes its animations and audio.
+   *
+   * @constructor
+   */
   constructor() {
     super().loadImage("assets/img/2_character_pepe/3_jump/J-34.png");
     this.moveCharacter();

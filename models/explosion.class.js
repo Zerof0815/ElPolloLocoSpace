@@ -1,6 +1,13 @@
 class Explosion extends MovableObject {
   currentFrame = 0;
 
+  /**
+   * Creates an explosion effect at the given position.
+   *
+   * @constructor
+   * @param {number} x - The X position of the explosion.
+   * @param {number} y - The Y position of the explosion.
+   */
   constructor(x, y) {
     super().loadImage(EXPLOSION[0]);
     this.x = x;

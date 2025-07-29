@@ -24,6 +24,16 @@ class Endboss extends MovableObject {
   explosionAudio;
   shootAudio;
 
+  /**
+   * Creates the Endboss enemy with its animations and audio.
+   *
+   * @constructor
+   * @param {string} imagePath - Path to the initial image.
+   * @param {number} height - Height of the endboss.
+   * @param {number} width - Width of the endboss.
+   * @param {number} speed - Movement speed of the endboss.
+   * @param {string[]} walkingImages - Array of images for walking animation.
+   */
   constructor(imagePath, height, width, speed, walkingImages) {
     super().loadImage(imagePath);
     this.height = height;

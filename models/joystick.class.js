@@ -1,4 +1,12 @@
 class Joystick {
+  /**
+   * Creates a joystick controller for touch and mouse input.
+   *
+   * @constructor
+   * @param {string} containerId - The ID of the joystick container element.
+   * @param {string} stickId - The ID of the inner stick element.
+   * @param {Object} keyboard - Reference to the keyboard controller.
+   */
   constructor(containerId, stickId, keyboard) {
     this.joystick = document.getElementById(containerId);
     this.stick = document.getElementById(stickId);

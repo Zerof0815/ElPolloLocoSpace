@@ -9,6 +9,13 @@ class Bottle extends MovableObject {
   };
   bottleAudio;
 
+  /**
+   * Creates a new bottle instance at the specified position.
+   *
+   * @constructor
+   * @param {number} x - The initial X position where the bottle is created.
+   * @param {number} y - The initial Y position where the bottle is created.
+   */
   constructor(x, y) {
     super();
     this.x = x - 100;

@@ -1,4 +1,12 @@
 class SpitChicken extends Chicken {
+  /**
+   * Creates a specialized chicken that can be used for projectile behavior.
+   *
+   * @constructor
+   * @param {number} x - X position.
+   * @param {number} y - Y position.
+   * @param {number} angle - Firing angle for the spit chicken.
+   */
   constructor(x, y, angle) {
     super(
       CHICKEN_IMAGES.SMALL[0],

@@ -14,6 +14,18 @@ class Chicken extends MovableObject {
     bottom: 15,
   };
 
+  /**
+   * Creates a new Chicken enemy with specified attributes.
+   *
+   * @constructor
+   * @param {string} imagePath - Path to the chicken's image.
+   * @param {number} height - The height of the chicken.
+   * @param {number} width - The width of the chicken.
+   * @param {number} speed - The movement speed of the chicken.
+   * @param {string[]} walkingImages - Image array for the walking animation.
+   * @param {number} chickenLifes - Number of lives the chicken has.
+   * @param {string} deadImage - Image to show when the chicken dies.
+   */
   constructor(
     imagePath,
     height,
