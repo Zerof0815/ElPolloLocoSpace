@@ -336,8 +336,8 @@ class World {
    * Handles the death of the boss: stops boss music, plays winning sound, triggers death animation, and sets boss as dead.
    */
   handleBossDeath() {
-    this.endAudio(this.bossMusic);
-    this.playAudio(this.winSound);
+    this.muteHandler.stopSound(this.bossMusic);
+    this.muteHandler.playSound(this.winSound);
     this.endboss.deathAnimation();
     this.isEndbossDead = true;
   }
@@ -424,8 +424,8 @@ class World {
   checkChickenScoreForEndboss() {
     setInterval(() => {
       if (this.chickenScore >= 10 && !this.endboss.isMoving) {
-        this.endAudio(this.backgroundMusic);
-        this.playAudio(this.bossRoar);
+        this.muteHandler.stopSound(this.backgroundMusic);
+        this.muteHandler.playSound(this.bossRoar);
         if (!this.isMuted) this.startBossMusic();
         this.endboss.startMoving();
       }

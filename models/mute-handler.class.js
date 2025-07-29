@@ -1,4 +1,8 @@
 class MuteHandler {
+  /**
+   * Creates a new instance of MuteHandler.
+   * @param {World} world - The current game world instance containing all relevant sounds.
+   */
   constructor(world) {
     this.world = world;
     this.sounds = [
@@ -10,6 +14,10 @@ class MuteHandler {
     ];
   }
 
+  /**
+   * Updates internal sound references from the world object.
+   * Call this if sounds are reinitialized (e.g., on world restart).
+   */
   updateSoundReferences() {
     this.sounds = [
       this.world.backgroundMusic,
@@ -20,6 +28,9 @@ class MuteHandler {
     ];
   }
 
+  /**
+   * Mutes all tracked sounds by pausing and muting them.
+   */
   muteAll() {
     this.sounds.forEach((sound) => {
       if (sound) {
@@ -29,6 +40,9 @@ class MuteHandler {
     });
   }
 
+  /**
+   * Unmutes all tracked sounds and resumes the appropriate background music.
+   */
   unmuteAll() {
     this.sounds.forEach((sound) => {
       if (sound) {
@@ -38,6 +52,11 @@ class MuteHandler {
     this.resumeMusic();
   }
 
+  /**
+   * Resumes either the boss music or background music,
+   * depending on the current game state.
+   * Does nothing if the endboss has been defeated.
+   */
   resumeMusic() {
     if (this.world.isEndbossDead) return;
 
@@ -48,6 +67,10 @@ class MuteHandler {
     }
   }
 
+  /**
+   * Toggles the mute state globally.
+   * Updates localStorage and UI sound icon accordingly.
+   */
   toggleMute() {
     this.world.isMuted = !this.world.isMuted;
     localStorage.setItem("isMuted", this.world.isMuted);
@@ -61,6 +84,10 @@ class MuteHandler {
     }
   }
 
+  /**
+   * Applies the stored mute setting from localStorage.
+   * Should be called during initialization to persist sound settings.
+   */
   applyStoredMute() {
     const savedMute = localStorage.getItem("isMuted");
     this.world.isMuted = savedMute === "true";
@@ -74,12 +101,20 @@ class MuteHandler {
     }
   }
 
+  /**
+   * Plays a given sound if not muted.
+   * @param {HTMLAudioElement} sound - The sound to be played.
+   */
   playSound(sound) {
     if (!this.world.isMuted && sound) {
       sound.play();
     }
   }
 
+  /**
+   * Stops a given sound by pausing it.
+   * @param {HTMLAudioElement} sound - The sound to be stopped.
+   */
   stopSound(sound) {
     if (sound) {
       sound.pause();

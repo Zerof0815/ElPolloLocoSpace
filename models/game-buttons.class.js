@@ -80,10 +80,17 @@ class GameButton extends DrawableObject {
    * @returns {GameButton} A configured restart button instance.
    */
   static createRestartButton(world) {
-    return new GameButton(390, 15, GAME_BUTTONS.RESTART, () => {
+    const restartButton = new GameButton(390, 15, GAME_BUTTONS.RESTART, () => {
       world.muteHandler.stopSound(world.backgroundMusic);
       restartGame();
     });
+
+    GameButton.startButtonPulse(
+      restartButton,
+      () => world.character?.isDead || world.endboss?.isDead
+    );
+
+    return restartButton;
   }
 
   /**
@@ -95,5 +102,80 @@ class GameButton extends DrawableObject {
     return new GameButton(470, 15, GAME_BUTTONS.SOUND, () => {
       world.muteHandler.toggleMute();
     });
+  }
+
+  /**
+   * Starts a pulse animation by scaling the button's width and height.
+   * The button stays centered by adjusting its x and y positions.
+   *
+   * @param {GameButton} button - The button to animate.
+   * @param {Function} conditionFn - A function returning true when the button should pulse.
+   * @param {number} intervalMs - The interval for the pulse animation.
+   */
+  static startButtonPulse(button, conditionFn, intervalMs = 50) {
+    let growing = true;
+    let pulseAmount = 0;
+    const maxPulse = 5;
+    const original = {
+      width: button.width,
+      height: button.height,
+      x: button.x,
+      y: button.y,
+    };
+    setInterval(() => {
+      if (!conditionFn()) {
+        GameButton.resetButton(button, original);
+        return;
+      }
+      ({ growing, pulseAmount } = GameButton.updatePulse(
+        growing,
+        pulseAmount,
+        maxPulse
+      ));
+      GameButton.applyPulse(button, original, pulseAmount);
+    }, intervalMs);
+  }
+
+  /**
+   * Resets the button to its original size and position.
+   * @param {GameButton} button - The button to reset.
+   * @param {{width: number, height: number, x: number, y: number}} original - Original values.
+   */
+  static resetButton(button, original) {
+    button.width = original.width;
+    button.height = original.height;
+    button.x = original.x;
+    button.y = original.y;
+  }
+
+  /**
+   * Updates the current pulse state (direction and size).
+   * @param {boolean} growing - Current growth direction.
+   * @param {number} pulseAmount - Current pulse amount.
+   * @param {number} maxPulse - Maximum pulse value.
+   * @returns {{ growing: boolean, pulseAmount: number }}
+   */
+  static updatePulse(growing, pulseAmount, maxPulse) {
+    if (growing) {
+      pulseAmount += 0.5;
+      if (pulseAmount >= maxPulse) growing = false;
+    } else {
+      pulseAmount -= 0.5;
+      if (pulseAmount <= 0) growing = true;
+    }
+    return { growing, pulseAmount };
+  }
+
+  /**
+   * Applies the pulse effect to button size and position.
+   * @param {GameButton} button - The button to animate.
+   * @param {{width: number, height: number, x: number, y: number}} original - Original values.
+   * @param {number} pulseAmount - Amount to scale the button.
+   */
+  static applyPulse(button, original, pulseAmount) {
+    button.width = original.width + pulseAmount;
+    button.height = original.height + pulseAmount;
+    button.x = original.x - pulseAmount / 2;
+    button.y = original.y - pulseAmount / 2;
   }
 }

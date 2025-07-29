@@ -24,11 +24,6 @@ class Character extends MovableObject {
   damageAudio;
   userHasInteracted = false;
 
-  /**
-   * Creates a new Character instance and initializes its animations and audio.
-   *
-   * @constructor
-   */
   constructor() {
     super().loadImage("assets/img/2_character_pepe/3_jump/J-34.png");
     this.moveCharacter();
@@ -123,9 +118,10 @@ class Character extends MovableObject {
    */
   checkDeath(world) {
     if (this.characterLifes <= 0 && !this.isDead) {
-      world.endAudio(world.backgroundMusic);
+      world.muteHandler.stopSound(world.backgroundMusic);
+      world.muteHandler.stopSound(world.bossMusic);
       setTimeout(() => {
-        world.playAudio(world.looseSound);
+        world.muteHandler.playSound(world.looseSound);
       }, 2000);
       this.triggerDeath();
     }

@@ -92,6 +92,10 @@ class Endboss extends MovableObject {
     this.isAttackAble = true;
     this.startAnimation(ENDBOSS.ATTACK, 200, true, null);
     this.attackInterval = setInterval(() => {
+      if (this.world.character.isDead) {
+        clearInterval(this.attackInterval);
+        return;
+      }
       if (this.currentImage === 6 && !this.hasSpit) {
         this.shootSound();
         this.spawnSpitChicken();
