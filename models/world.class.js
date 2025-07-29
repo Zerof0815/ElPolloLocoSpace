@@ -1,6 +1,7 @@
 class World {
   canvas;
   character = new Character();
+  muteHandler;
   background = level1.background;
   enemies = [];
   asteroids = [];
@@ -43,7 +44,6 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
-    this.checkLocalStorageIfMuted();
     this.endboss.world = this;
     this.draw();
     this.character.world = this;
@@ -53,6 +53,9 @@ class World {
     this.checkCollisions();
     this.checkChickenScoreForEndboss();
     this.loadAudio();
+    this.muteHandler = new MuteHandler(this);
+    this.muteHandler.updateSoundReferences();
+    this.muteHandler.applyStoredMute();
     if (!this.isMuted) this.startBackgroundMusic();
     this.buttonController = new ButtonController(
       this.canvas,
@@ -445,119 +448,11 @@ class World {
   }
 
   /**
-   * Pauses the given audio object.
-   * @param {HTMLAudioElement} sound - The audio element to pause.
-   */
-  endAudio(sound) {
-    sound.pause();
-  }
-
-  /**
-   * Plays the given audio object if the game is not muted.
-   * @param {HTMLAudioElement} sound - The audio element to play.
-   */
-  playAudio(sound) {
-    if (this.isMuted) return;
-    sound.play();
-  }
-
-  /**
    * Starts the boss music after a delay.
    */
   startBossMusic() {
     setTimeout(() => {
       this.bossMusic.play();
     }, 3000);
-  }
-
-  /**
-   * Toggles game mute state and updates the sound button image.
-   */
-  isGameMuted() {
-    if (this.isMuted) {
-      this.muteAllSounds();
-      this.soundButton.loadImage(GAME_BUTTONS.NO_SOUND);
-    } else {
-      this.unmuteAllSounds();
-      this.soundButton.loadImage(GAME_BUTTONS.SOUND);
-    }
-  }
-
-  /**
-   * Mutes and pauses all major game audio tracks.
-   */
-  muteAllSounds() {
-    const sounds = [
-      this.backgroundMusic,
-      this.bossRoar,
-      this.bossMusic,
-      this.looseSound,
-      this.winSound,
-    ];
-
-    sounds.forEach((sound) => {
-      if (sound) {
-        sound.pause();
-        sound.muted = true;
-      }
-    });
-  }
-
-  /**
-   * Unmutes all major game audio tracks and resumes appropriate music based on game state.
-   */
-  unmuteAllSounds() {
-    const sounds = [
-      this.backgroundMusic,
-      this.bossRoar,
-      this.bossMusic,
-      this.looseSound,
-      this.winSound,
-    ];
-
-    sounds.forEach((sound) => {
-      if (sound) {
-        sound.muted = false;
-      }
-    });
-
-    this.musicHandler();
-  }
-
-  /**
-   * Determines which music to play based on the current game state:
-   * - If the endboss is active, plays boss music.
-   * - Otherwise, plays background music.
-   * Does not play any music if the endboss is already dead.
-   */
-  musicHandler() {
-    if (this.isEndbossDead) {
-      return;
-    } else if (this.endboss?.isMoving) {
-      if (this.bossMusic && this.bossMusic.paused) {
-        this.bossMusic.play();
-      }
-    } else {
-      if (this.backgroundMusic && this.backgroundMusic.paused) {
-        this.backgroundMusic.play();
-      }
-    }
-  }
-
-  /**
-   * Loads the mute state from local storage and applies it.
-   * Also updates the sound button image based on mute status.
-   */
-  checkLocalStorageIfMuted() {
-    const savedMute = localStorage.getItem("isMuted");
-    this.isMuted = savedMute === "true";
-
-    if (this.isMuted) {
-      this.muteAllSounds();
-      this.soundButton.loadImage(GAME_BUTTONS.NO_SOUND);
-    } else {
-      this.unmuteAllSounds();
-      this.soundButton.loadImage(GAME_BUTTONS.SOUND);
-    }
   }
 }

@@ -81,7 +81,7 @@ class GameButton extends DrawableObject {
    */
   static createRestartButton(world) {
     return new GameButton(390, 15, GAME_BUTTONS.RESTART, () => {
-      world.endAudio(world.backgroundMusic);
+      world.muteHandler.stopSound(world.backgroundMusic);
       restartGame();
     });
   }
@@ -93,9 +93,7 @@ class GameButton extends DrawableObject {
    */
   static createSoundButton(world) {
     return new GameButton(470, 15, GAME_BUTTONS.SOUND, () => {
-      world.isMuted = !world.isMuted;
-      localStorage.setItem("isMuted", world.isMuted ? "true" : "false");
-      world.isGameMuted();
+      world.muteHandler.toggleMute();
     });
   }
 }
